@@ -1,0 +1,19 @@
+server.port=${PORT:8189}
+server.servlet.context-path=/
+
+spring.mvc.hiddenmethod.filter.enabled=true
+
+
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQL94Dialect
+spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults = false
+spring.jpa.properties.hibernate.id.new_generator_mappings=false
+spring.jpa.hibernate.ddl-auto = update
+## create
+## none ## update
+
+## ---- Postgres ----
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.url=${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/postgres?currentSchema=valcurs}
+spring.datasource.username=${JDBC_DATABASE_USERNAME:postgres}
+spring.datasource.password=${JDBC_DATABASE_PASSWORD:password}
+spring.jpa.show-sql=false

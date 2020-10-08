@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Конвертер</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div>
+        <img src="statico/img/currency.jpg/">
+    </div>
+
+    <div th:replace="~{navigation :: navigation(Home)}" />
+
+    <div class="col-md-10 text-left">
+        <div>
+            <h4><p> Сегодня: <span th:text="${#dates.format(standardDate, 'dd MMMM yyyy HH:mm:ss')}">Сегодня: 26 августа 2020 19:08</span></p></h4>
+<!--            <h4><p> Сегодня: <span th:text="${#dates.format(standardDate, 'dd MMMM yyyy')}">Сегодня: 26 августа 2020 19:08</span></p></h4>-->
+
+            <h4>Актуальный курс валют</h4>
+            <table class="table table-hover">
+                <thead class="head-dark">
+                <tr>
+                    <td>Код</td>
+                    <td>Наименование валюты</td>
+                    <td>Номинал</td>
+                    <td>Значение</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry, stats : ${currencies}" th:with="currency=${entry.value}">
+                    <td th:utext="${currency.charCode}"/>
+                    <td th:utext="${currency.name}"/>
+                    <td th:utext="${currency.nominal}"/>
+                    <td th:utext="${currency.previous}"/>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
