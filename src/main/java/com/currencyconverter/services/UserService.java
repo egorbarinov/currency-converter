@@ -1,16 +1,20 @@
 package com.currencyconverter.services;
 
-import com.currencyconverter.entities.User;
+import com.currencyconverter.dto.UserDto;
+import com.currencyconverter.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.security.Principal;
+import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
     User findByUsername(String username);
-    Iterable<User> getAllUser();
+    User findByUserEmail(String email);
+    List<UserDto> getAll();
+//    Iterable<User> getAllUser();
     User addAuditEntry(String principal, String queryString);
     User getAuditHistoryForUser(String username);
     User createNewQueryHistoryForUser(Principal principal);
@@ -19,6 +23,7 @@ public interface UserService extends UserDetailsService {
     @Override
     UserDetails loadUserByUsername(String s) throws UsernameNotFoundException;
 
-    boolean saveUser(User user);
+//    boolean saveUser(UserDto userDto);
+    void saveUser(UserDto userDto);
 
 }

@@ -1,8 +1,9 @@
 package com.currencyconverter.services;
 
-import com.currencyconverter.entities.Role;
-import com.currencyconverter.entities.User;
-import com.currencyconverter.repositories.UserRepositoryDao;
+import com.currencyconverter.dto.UserDto;
+import com.currencyconverter.model.Role;
+import com.currencyconverter.model.User;
+import com.currencyconverter.dao.UserRepositoryDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,26 +40,53 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	return userRepositoryDAO.findByUsername(username);
 	}
 
+	@Override
+	public User findByUserEmail(String email) {
+		return userRepositoryDAO.findByEmail(email);
+	}
 
 	@Override
-	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = findByUsername(username);
-		if(user == null) {
-			throw new UsernameNotFoundException(String.format("User '%s' not found", username));
+		if(user == null){
+			throw new UsernameNotFoundException("User not found with name: " + username);
 		}
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
-				mapRolesToAuthorities(user.getRoles()));
+
+		List<GrantedAuthority> roles = new ArrayList<>();
+		roles.add(new SimpleGrantedAuthority(user.getRole().name()));
+
+		return new org.springframework.security.core.userdetails.User(
+				user.getUsername(),
+				user.getPassword(),
+				roles);
 	}
 
+//	@Override
+//	@Transactional
+//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//		User user = findByUsername(username);
+//		if(user == null) {
+//			throw new UsernameNotFoundException(String.format("User '%s' not found", username));
+//		}
+//		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+//				mapRolesToAuthorities(user.getRoles()));
+//	}
+//
+//
+//	private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role2> role2s) {
+//		return role2s.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
+//	}
 
-	private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-		return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
-	}
+//	@Override
+//	public Iterable<User> getAllUser() {
+//		return userRepositoryDAO.findAll();
+//	}
 
 	@Override
-	public Iterable<User> getAllUser() {
-		return userRepositoryDAO.findAll();
+	public List<UserDto> getAll() {
+		return userRepositoryDAO.findAll().stream()
+				.map(this::toDto)
+				.collect(Collectors.toList());
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(User.class);
@@ -91,19 +117,50 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return userRepositoryDAO.save(queryHistoryForUser);
 	}
 
-	public boolean saveUser(User user) {
-		User userFromDB = userRepositoryDAO.findByUsername(user.getUsername());
+//	public boolean saveUser(UserDto userDto) {
+//		User userFromDB = userRepositoryDAO.findByUsername(userDto.getUsername());
+//
+//		boolean created = true;
+//		if (userFromDB != null) {
+//			created = false;
+//		}
+//
+//		userFromDB = userRepositoryDAO.findByEmail(userDto.getEmail());
+//		if (userFromDB != null) {
+//			created = false;
+//		} else created = true;
+//
+//		if (created) {
+//			User user = User.builder()
+//					.username(userDto.getUsername())
+//					.password(bCryptPasswordEncoder.encode(userDto.getPassword()))
+//					.email(userDto.getEmail())
+//					.role(Role.CLIENT)
+//					.enabled(false)
+//					.build();
+//			userRepositoryDAO.save(user);
+//			return true;
+//		}
+//		return false;
+//
+//	}
 
-		if (userFromDB != null) {
-			return false;
-		}
-
-		user.setRoles(Collections.singleton(new Role("ROLE_USER")));
-		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		user.setEmail(user.getEmail());
-		user.setEnabled(true);
+	public void saveUser(UserDto userDto) {
+		User user = User.builder()
+				.username(userDto.getUsername())
+				.password(bCryptPasswordEncoder.encode(userDto.getPassword()))
+				.email(userDto.getEmail())
+				.role(Role.CLIENT)
+				.enabled(false)
+				.build();
 		userRepositoryDAO.save(user);
-		return true;
+	}
+
+	private UserDto toDto(User user){
+		return UserDto.builder()
+				.username(user.getUsername())
+				.email(user.getEmail())
+				.build();
 	}
 
 }

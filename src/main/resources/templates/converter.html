@@ -29,26 +29,42 @@
                         <div class="col form-group">
                             <select class="select" size="1" th:field="${selectedCurrencies.currencyFrom}">
                                 <option value="RUB" >RUB Российский рубль</option>
-                                <option th:each="entry, stats : ${currencies}" th:with="currency=${entry.value}"
+                                <!--for a MAP -->
+<!--                                <option th:each="entry, stats : ${currencies}" th:with="currency=${entry.value}"-->
+<!--                                        th:value="${currency.charCode}"-->
+<!--                                        th:utext="${currency.charCode + ' ' + currency.name}"-->
+<!--                                        th:selected="${currency.isSelected(selectedCurrencies.currencyFrom)}">-->
+<!--                                </option>-->
+                                <!--for a LIST -->
+                                <option th:each="currency : ${currencies}"
                                         th:value="${currency.charCode}"
-                                        th:text="${currency.charCode + ' ' + currency.name}"
-                                        th:selected="${currency.isSelected(selectedCurrencies.currencyFrom)}"></option>
+                                        th:utext="${currency.charCode + ' ' + currency.name}"
+                                        th:selected="${currency.isSelected(selectedCurrencies.currencyFrom)}">
+                                </option>
                             </select>
                             </div>
                         <div class="col form-group">
                             <select class="select" size="1" th:field="${selectedCurrencies.currencyTo}">  <!--th:field="${lastSelected.charCode}" -->
                                 <option value="RUB" selected="selected">RUB Российский рубль</option>
-                                <option th:each="entry, stats : ${currencies}" th:with="currency=${entry.value}"
+                                <!--for a MAP -->
+<!--                                <option th:each="entry, stats : ${currencies}" th:with="currency=${entry.value}"-->
+<!--                                        th:value="${currency.charCode}"-->
+<!--                                        th:utext="${currency.charCode + ' ' + currency.name}"-->
+<!--                                        th:selected="${currency.isSelected(selectedCurrencies.currencyTo)}">-->
+<!--                                </option>-->
+                                <!--for a LIST -->
+                                <option th:each="currency : ${currencies}"
                                         th:value="${currency.charCode}"
-                                        th:text="${currency.charCode + ' ' + currency.name}"
-                                        th:selected="${currency.isSelected(selectedCurrencies.currencyTo)}"></option>
+                                        th:utext="${currency.charCode + ' ' + currency.name}"
+                                        th:selected="${currency.isSelected(selectedCurrencies.currencyTo)}">
+                                </option>
                             </select>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col form-group">
                                 <p> <input type="number" th:field="${selectedCurrencies.amountToConvert}" th:placeholder="0"/></p>
-                                <p> <errors path="amountToConverted" th:text="${amountError}"></errors></p>
+                                <p> <errors path="amountToConverted" th:utext="${amountError}"></errors></p>
                                 </div>
                             <div class="col form-group">
                                 <p><input type="text" th:placeholder="${#numbers.formatDecimal(selectedCurrencies.convertedAmount, 1, 4)}" style="color: red; font-weight: bold;" readonly/></p>

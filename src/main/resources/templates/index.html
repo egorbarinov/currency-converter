@@ -38,7 +38,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="entry, stats : ${currencies}" th:with="currency=${entry.value}">
+                <!--for a Map -->
+<!--                <tr th:each="entry, stats : ${currencies}" th:with="currency=${entry.value}">-->
+<!--                    <td th:utext="${currency.charCode}"/>-->
+<!--                    <td th:utext="${currency.name}"/>-->
+<!--                    <td th:utext="${currency.nominal}"/>-->
+<!--                    <td th:utext="${currency.previous}"/>-->
+<!--                </tr>-->
+                <!--for a LIST -->
+                <tr th:each="currency : ${currencies}">
                     <td th:utext="${currency.charCode}"/>
                     <td th:utext="${currency.name}"/>
                     <td th:utext="${currency.nominal}"/>

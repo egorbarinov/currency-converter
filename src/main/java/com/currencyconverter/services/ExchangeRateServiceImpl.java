@@ -1,8 +1,10 @@
 package com.currencyconverter.services;
 
-import com.currencyconverter.entities.ExchangeRate;
-import com.currencyconverter.entities.Valute;
-import com.currencyconverter.repositories.ExchangeRateRepositoryDao;
+import com.currencyconverter.dto.ValuteDto;
+import com.currencyconverter.model.ExchangeRate;
+import com.currencyconverter.model.Valute;
+import com.currencyconverter.mapper.ValuteMapper;
+import com.currencyconverter.dao.ExchangeRateRepositoryDao;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +16,14 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 @Service
 @EnableScheduling
 public class ExchangeRateServiceImpl implements ExchangeRateService{
+
+    private final ValuteMapper mapper = ValuteMapper.MAPPER;
+
     private ExchangeRateRepositoryDao exchangeRateRepositoryDao;
 
     private final static Logger logger = LoggerFactory.getLogger(ExchangeRate.class);
@@ -27,6 +31,15 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Autowired
     public void setExchangeRateRepositoryDao(ExchangeRateRepositoryDao exchangeRateRepositoryDao) {
         this.exchangeRateRepositoryDao = exchangeRateRepositoryDao;
+
+    }
+
+    // перевёл сущность в DTO
+    @Override
+    public List<ValuteDto> getAll() {
+        LocalDate date =LocalDate.now();
+//        return mapper.fromValuteList(exchangeRateRepositoryDao.findById(date).get().getValute().values());
+        return mapper.fromValuteList(exchangeRateRepositoryDao.findExchangeRateByDate(date).getValute().values());
     }
 
     @Override
@@ -35,28 +48,22 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     }
 
     @Override
-    public Map <String, Valute> getAllValute() {
-        Calendar date = returnDate();
-        return exchangeRateRepositoryDao.findById(date).get().getValute();
+    public Map <String, Valute> getAllValute(LocalDate date) {
+
+//        return exchangeRateRepositoryDao.findById(date).get().getValute();
+        return exchangeRateRepositoryDao.findExchangeRateByDate(date).getValute();
+
     }
+
+//    @Override
+//    public ExchangeRate findById() {
+//        LocalDate date =LocalDate.now();
+//        return exchangeRateRepositoryDao.findById(date).get();
+//    }
 
     @Override
-    public ExchangeRate findById() {
-        Calendar date = returnDate();
-        return exchangeRateRepositoryDao.findById(date).get();
-    }
-
-    /**
-     * Метод приводит текущую дату к виду: Wed Oct 07 00:00:00 MSK 2020, в дальнейшем
-     * его значение используется для поиска курсов валют в базе данных.
-     * В базе данных значение хранится в формате: 2020-10-08 00:00:00
-     */
-    private Calendar returnDate() {
-        LocalDate ld = LocalDate.now(ZoneId.of("Europe/Moscow"));
-        Date dateNow = java.sql.Date.valueOf(ld); // приводит дату к виду 2020-10-08
-        Calendar date = Calendar.getInstance(TimeZone.getTimeZone("Europe/Moscow"));
-        date.setTime(dateNow);
-        return date;
+    public ExchangeRate findByDate(LocalDate date) {
+        return exchangeRateRepositoryDao.findExchangeRateByDate(date);
     }
 
     /**
@@ -64,34 +71,32 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
      * посредством библиотеки Jackson
      */
     @Override
-    public int processingHttpRequest() throws IOException {
-        URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-        int status = con.getResponseCode();
-        if (status == HttpURLConnection.HTTP_OK) {
-
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
-            exchangeRateRepositoryDao.save(rate);
-            logger.info("All records saved.");
-        }
-        return status;
-    }
-
-    /**
-     * Защита от недоступности сведений из URL-адреса: метод либо выполнит сохранение данных,
-     * либо вернёт false;
-     */
-    @Override
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
-    public boolean isLoaded() throws IOException {
-        int status = processingHttpRequest();
-        if (status == 200) {
-           return true;
+    public void processingHttpRequest() throws IOException {
+       // "Date": "2020-11-04T11:30:00+03:00",
+
+//        LocalDateTime date =LocalDate.now().atTime(0,0,0).atZone(ZoneId.of("+03:00")).toLocalDateTime();
+//        System.out.println(date); // 2020-11-03T11:30
+        LocalDate date = LocalDate.now();
+//        LocalDate date = LocalDate.now().atTime(0,0,0).toLocalDate();
+//        System.out.println(date); // 2020-11-03
+
+        if (exchangeRateRepositoryDao.findExchangeRateByDate(date) == null) {
+
+            URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            int status = con.getResponseCode();
+            if (status == HttpURLConnection.HTTP_OK) {
+
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
+                exchangeRateRepositoryDao.save(rate);
+                logger.info("All records saved.");
+            }
         }
-        return false;
+
     }
 
 }

@@ -1,8 +1,9 @@
-package com.currencyconverter.repositories;
+package com.currencyconverter.dao;
 
-import com.currencyconverter.entities.User;
+import com.currencyconverter.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepositoryDao extends JpaRepository<User, Long> {
     User findByUsername(String username);
+    User findByEmail(String username);
 }

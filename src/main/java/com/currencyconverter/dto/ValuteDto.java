@@ -1,15 +1,24 @@
-package com.currencyconverter.viewModel;
+package com.currencyconverter.dto;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static com.currencyconverter.common.CurrencyConverterUtil.*;
+import static com.currencyconverter.common.CurrencyConverterUtil.getFormattedAmount;
 
-public class ViewCurrencies {
+@Data
+@NoArgsConstructor
+public class ValuteDto {
+    private Long pk;
+    private String charCode;
+    private BigDecimal nominal;
+    private String name;
+    private BigDecimal value;
+    private BigDecimal previous;
 
     @NotBlank
     private String currencyFrom;
@@ -27,47 +36,6 @@ public class ViewCurrencies {
     @Past
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date conversionDate;
-
-
-    public String getCurrencyFrom() {
-        return currencyFrom;
-    }
-
-    public void setCurrencyFrom(String currencyFrom) {
-        this.currencyFrom = currencyFrom;
-    }
-
-    public String getCurrencyTo() {
-        return currencyTo;
-    }
-
-    public void setCurrencyTo(String currencyTo) {
-        this.currencyTo = currencyTo;
-    }
-
-    public BigDecimal getAmountToConvert() {
-        return amountToConvert;
-    }
-
-    public void setAmountToConvert(BigDecimal amountToConvert) {
-        this.amountToConvert = amountToConvert;
-    }
-
-    public BigDecimal getConvertedAmount() {
-        return convertedAmount;
-    }
-
-    public void setConvertedAmount(BigDecimal convertedAmount) {
-        this.convertedAmount = convertedAmount;
-    }
-
-    public Date getConversionDate() {
-        return conversionDate;
-    }
-
-    public void setConversionDate(Date conversionDate) {
-        this.conversionDate = conversionDate;
-    }
 
     @Override
     public String toString() {
@@ -90,4 +58,10 @@ public class ViewCurrencies {
         return auditString.toString();
     }
 
+    public boolean isSelected(String ValuteDtoCharCode){
+        if (ValuteDtoCharCode != null) {
+            return ValuteDtoCharCode.equals(charCode);
+        }
+        return false;
+    }
 }

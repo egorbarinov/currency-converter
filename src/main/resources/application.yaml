@@ -17,7 +17,7 @@ spring:
         temp:
           use_jdbc_metadata_defaults: false
         id:
-          new_generator_mappings: true
+          new_generator_mappings: false
     database-platform: org.hibernate.dialect.PostgreSQL95Dialect
 
 
