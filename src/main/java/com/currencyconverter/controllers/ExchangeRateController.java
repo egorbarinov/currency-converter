@@ -21,10 +21,10 @@ import java.util.Locale;
 @Controller
 public class ExchangeRateController {
 
-    private ExchangeRateService exchangeRateService;
-    private DelegatorService delegatorService;
-    private UserServiceImpl userService;
-    private LocalDate date = LocalDate.now();
+    private final ExchangeRateService exchangeRateService;
+    private final DelegatorService delegatorService;
+    private final UserServiceImpl userService;
+    private final LocalDate date = LocalDate.now();
 
     public ExchangeRateController(ExchangeRateService exchangeRateService, DelegatorService delegatorService, UserServiceImpl userService) throws IOException {
         this.exchangeRateService = exchangeRateService;
@@ -43,7 +43,6 @@ public class ExchangeRateController {
     public String login() {
         return "login";
     }
-
 
 //    @GetMapping({"/","/index"})
 //    public String index(Model model) {
@@ -95,7 +94,6 @@ public class ExchangeRateController {
     public String amountSubmit(@Valid ValuteDto valuteDto, Model model, Principal principal) {
         model.addAttribute("currencies", exchangeRateService.getAll());
         model.addAttribute("selectedCurrencies", valuteDto);
-
 
         if (valuteDto.getAmountToConvert() == null) {
             model.addAttribute("amountError", "Поле не может быть пустым. Введите значение!");
