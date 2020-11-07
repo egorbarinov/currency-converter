@@ -4,9 +4,11 @@ import com.currencyconverter.dto.ValuteDto;
 import com.currencyconverter.services.DelegatorService;
 import com.currencyconverter.services.ExchangeRateService;
 import com.currencyconverter.services.UserServiceImpl;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 @Controller
 public class ExchangeRateController {
@@ -28,6 +31,12 @@ public class ExchangeRateController {
         this.delegatorService = delegatorService;
         this.userService = userService;
         exchangeRateService.processingHttpRequest();
+    }
+
+    @InitBinder   // для web обработки сообщений. WebDataBinder блокирует нулевые формы
+    public void initBinder(WebDataBinder dataBinder) {
+        StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+        dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
     @GetMapping("/login")
@@ -56,12 +65,12 @@ public class ExchangeRateController {
         if (date_req == null) {
             date_req = LocalDate.now().toString();
             model.addAttribute("requestDate", date_req);
-            model.addAttribute("date", date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
+            model.addAttribute("date", date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
             model.addAttribute("currencies", exchangeRateService.getAll(date));
         }
         else {
             LocalDate localDate = LocalDate.parse(date_req);
-            model.addAttribute("date", localDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
+            model.addAttribute("date", localDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
             model.addAttribute("requestDate", date_req);
             try {
                 model.addAttribute("currencies", exchangeRateService.getAll(localDate));
