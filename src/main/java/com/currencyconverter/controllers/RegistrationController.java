@@ -42,28 +42,30 @@ public class RegistrationController {
 
         model.addAttribute("userForm", userForm);
 
+        if (userForm.getUsername() == null || userForm.getPassword() == null || userForm.getPasswordConfirm() == null || userForm.getEmail() == null ) {
+            model.addAttribute("errorForm", "Все поля должны быть заполнены");
+            return "register";
+        }
+
         //проверка содержимого полей формы пользователя
         if (bindingResult.hasErrors()) {
             return "register";
         }
         //если нового пользователя нет в базе то заводим его
-        User existing = userService.findByUsername(userForm.getUsername());
-        if (existing != null) {
+//        User existing = userService.findByUsername(userForm.getUsername());
+        boolean existing = userService.existByName(userForm.getUsername());
+        if (existing) {
             userForm.setUsername(null);
             model.addAttribute("registrationError", "Пользователь с таким логином уже существует");
 
             return "register";
         }
 
-        User existingByEmail = userService.findByUserEmail(userForm.getEmail());
-        if (existingByEmail != null) {
+//        User existingByEmail = userService.findByUserEmail(userForm.getEmail());
+        existing = userService.existByEmail(userForm.getEmail());
+        if (existing) {
             userForm.setEmail(null);
             model.addAttribute("mailError", "Пользователь с таким email уже существует");
-            return "register";
-        }
-
-        if (userForm.getUsername() == null || userForm.getPassword() == null || userForm.getPasswordConfirm() == null || userForm.getEmail() == null ) {
-            model.addAttribute("errorForm", "Все поля должны быть заполнены");
             return "register";
         }
 

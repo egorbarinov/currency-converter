@@ -22,9 +22,8 @@ public class DelegatorService {
     /**
      * метод для выполнения конвертации данных, присваивающий сущности результат и дату выполнения операции
      */
-    public void performCurrencyConversion(ValuteDto valuteDto) {
-        LocalDate date = LocalDate.now();
-
+    public void performCurrencyConversion(ValuteDto valuteDto, LocalDate date) {
+//        LocalDate date = LocalDate.now();
         String[] resultValues = valuteDto.toString().split(",");
         List<BigDecimal> valuesToDecimal = new ArrayList<>();
         for (int i = 0; i < resultValues.length; i++) {
@@ -33,13 +32,13 @@ public class DelegatorService {
                 valuesToDecimal.add(result);
             } else {
 //                BigDecimal result = exchangeRateService.findById().getValute()
-//                        .get(resultValues[i]).getPrevious()
+//                        .get(resultValues[i]).getValue()
 //                        .divide(exchangeRateService.findById()
 //                                .getValute().get(resultValues[i]).getNominal());
 //                valuesToDecimal.add(result);
 
                 BigDecimal result = exchangeRateService.getAllValute(date)
-                        .get(resultValues[i]).getPrevious()
+                        .get(resultValues[i]).getValue()
                         .divide(exchangeRateService.getAllValute(date)
                                 .get(resultValues[i]).getNominal());
                 valuesToDecimal.add(result);

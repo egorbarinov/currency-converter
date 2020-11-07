@@ -15,4 +15,5 @@ public interface ExchangeRateService {
 //    ExchangeRate findById();
     ExchangeRate findByDate(LocalDate date);
     List<ValuteDto> getAll();
+    List<ValuteDto> getAll(LocalDate date);
 }

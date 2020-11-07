@@ -46,6 +46,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
+	public boolean existByName(String username) {
+		return findByUsername(username) != null;
+	}
+
+	@Override
+	public boolean existByEmail(String email) {
+		return findByUserEmail(email) != null;
+	}
+
+	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = findByUsername(username);
 		if(user == null){

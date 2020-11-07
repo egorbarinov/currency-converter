@@ -16,7 +16,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
+
 
 @Service
 @EnableScheduling
@@ -38,8 +40,24 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     public List<ValuteDto> getAll() {
         LocalDate date =LocalDate.now();
-//        return mapper.fromValuteList(exchangeRateRepositoryDao.findById(date).get().getValute().values());
-        return mapper.fromValuteList(exchangeRateRepositoryDao.findExchangeRateByDate(date).getValute().values());
+        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepositoryDao.findExchangeRateByDate(date).getValute().values());
+//        lists.sort(new Comparator<ValuteDto>() {
+//            @Override
+//            public int compare(ValuteDto o1, ValuteDto o2) {
+//                return o1.getName().compareTo(o2.getName());
+//            }
+//        });
+//        lists.sort((v1, v2) -> v1.getCharCode().compareTo(v2.getCharCode()));
+        lists.sort(Comparator.comparing(ValuteDto::getName));
+        return lists;
+    }
+
+    @Override
+    public List<ValuteDto> getAll(LocalDate date) {
+//        LocalDate localDate = LocalDate.parse(date);
+        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepositoryDao.findExchangeRateByDate(date).getValute().values());
+        lists.sort(Comparator.comparing(ValuteDto::getName));
+        return lists;
     }
 
     @Override
@@ -49,7 +67,6 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     @Override
     public Map <String, Valute> getAllValute(LocalDate date) {
-
 //        return exchangeRateRepositoryDao.findById(date).get().getValute();
         return exchangeRateRepositoryDao.findExchangeRateByDate(date).getValute();
 
@@ -74,26 +91,19 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
     public void processingHttpRequest() throws IOException {
        // "Date": "2020-11-04T11:30:00+03:00",
-
 //        LocalDateTime date =LocalDate.now().atTime(0,0,0).atZone(ZoneId.of("+03:00")).toLocalDateTime();
 //        System.out.println(date); // 2020-11-03T11:30
-        LocalDate date = LocalDate.now();
-//        LocalDate date = LocalDate.now().atTime(0,0,0).toLocalDate();
-//        System.out.println(date); // 2020-11-03
-
-        if (exchangeRateRepositoryDao.findExchangeRateByDate(date) == null) {
+        if (exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
 
             URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             int status = con.getResponseCode();
             if (status == HttpURLConnection.HTTP_OK) {
-
                 ObjectMapper objectMapper = new ObjectMapper();
-
                 ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
                 exchangeRateRepositoryDao.save(rate);
-                logger.info("All records saved.");
+                logger.info("All records saved " + LocalDateTime.now() + ".");
             }
         }
 

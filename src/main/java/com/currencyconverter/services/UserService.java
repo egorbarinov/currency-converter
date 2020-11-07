@@ -12,6 +12,8 @@ import java.util.List;
 public interface UserService extends UserDetailsService {
 
     User findByUsername(String username);
+    boolean existByName(String username);
+    boolean existByEmail(String username);
     User findByUserEmail(String email);
     List<UserDto> getAll();
 //    Iterable<User> getAllUser();
@@ -19,11 +21,6 @@ public interface UserService extends UserDetailsService {
     User getAuditHistoryForUser(String username);
     User createNewQueryHistoryForUser(Principal principal);
     User saveQueryHistory(User queryHistoryForUser);
-
-    @Override
-    UserDetails loadUserByUsername(String s) throws UsernameNotFoundException;
-
-//    boolean saveUser(UserDto userDto);
     void saveUser(UserDto userDto);
 
 }
