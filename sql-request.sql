@@ -8,15 +8,11 @@ CREATE TABLE valcurs.course
 (
     date timestamp without time zone NOT NULL,
     previous_date timestamp without time zone,
-    previousurl character varying(255) COLLATE pg_catalog."default",
-    "timestamp" timestamp without time zone,
-    CONSTRAINT course_pkey PRIMARY KEY (date)
-)
+    previousurl varchar(255),
+    timestamp timestamp without time zone,
+    PRIMARY KEY (date)
+);
 
-    TABLESPACE pg_default;
-
-ALTER TABLE valcurs.course
-    OWNER to postgres;
 
 -- Table: json.rate_valute_mapping
 
@@ -26,14 +22,8 @@ CREATE TABLE valcurs.rate_valute_mapping
 (
     course_date timestamp without time zone,
     valute_pk bigserial,
-    valute_key character varying(255) COLLATE pg_catalog."default"
-)
-
-    TABLESPACE pg_default;
-
-ALTER TABLE valcurs.rate_valute_mapping
-    OWNER to postgres;
-
+    valute_key varchar(255)
+);
 
 create table valcurs.currencies (
     pk bigserial,
@@ -75,7 +65,7 @@ create table valcurs.users_audit_entries (
 
 insert into valcurs.users (username, password, email, enabled, role)
 values
-	('user', '$2y$12$EFgNamlZ08x/UXolq6ajreNjOMmDlwRqPWyr4iUUMKGJn/35GVoau', 'user@gmail.com', true, 'ADMIN');
+       ('user', '$2y$12$EFgNamlZ08x/UXolq6ajreNjOMmDlwRqPWyr4iUUMKGJn/35GVoau', 'user@gmail.com', true, 'ADMIN');
 
 insert into valcurs.users (username, password, email, enabled, role)
 values

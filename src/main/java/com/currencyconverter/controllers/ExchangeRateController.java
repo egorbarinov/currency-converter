@@ -51,8 +51,11 @@ public class ExchangeRateController {
     @GetMapping({"/","/index"})
     public String index(Model model, @RequestParam(required = false, name = "date_req") String date_req) {
 
+
         model.addAttribute("standardDate", LocalDateTime.now());
         if (date_req == null) {
+            date_req = LocalDate.now().toString();
+            model.addAttribute("requestDate", date_req);
             model.addAttribute("date", date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy")));
             model.addAttribute("currencies", exchangeRateService.getAll(date));
         }

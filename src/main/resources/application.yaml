@@ -18,8 +18,7 @@ spring:
           use_jdbc_metadata_defaults: false
         id:
           new_generator_mappings: false
-    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
-
+#    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
 
   datasource:
     driver-class-name: org.postgresql.Driver
