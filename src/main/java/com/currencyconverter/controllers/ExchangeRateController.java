@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -43,6 +44,7 @@ public class ExchangeRateController {
     public String login() {
         return "login";
     }
+
 
 //    @GetMapping({"/","/index"})
 //    public String index(Model model) {
@@ -94,6 +96,7 @@ public class ExchangeRateController {
     public String amountSubmit(@Valid ValuteDto valuteDto, Model model, Principal principal) {
         model.addAttribute("currencies", exchangeRateService.getAll());
         model.addAttribute("selectedCurrencies", valuteDto);
+
 
         if (valuteDto.getAmountToConvert() == null) {
             model.addAttribute("amountError", "Поле не может быть пустым. Введите значение!");
