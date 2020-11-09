@@ -61,12 +61,6 @@ public class ExchangeRateController {
     @GetMapping({"/","/index"})
     public String index(Model model, @RequestParam(required = false, name = "date_req") String date_req) {
 
-//        LocalDate before = LocalDate.of(2020,11,9);
-//        LocalDate now = LocalDate.now();
-//        System.out.println(now.compareTo(before)); // выведет положительное число, если текущая дата больше даты в скобках
-//                                                   // отрицательное число, если текущая дата меньше даты в скобках
-//                                                   // 0, если даты равны
-
         model.addAttribute("standardDate", LocalDateTime.now());
         if (date_req == null) {
             date_req = LocalDate.now().toString();

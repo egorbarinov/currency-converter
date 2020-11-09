@@ -103,7 +103,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
                     logger.info("The current date is greater than the date of rate from the json-file. Updating the date in the json file data:  " + LocalDateTime.now() + ".");
                     rate.setDate(LocalDate.now());
                     exchangeRateRepositoryDao.save(rate);
-                } else if (LocalDate.now().compareTo(rate.getDate()) < 0) {
+                } else if (LocalDate.now().compareTo(rate.getDate()) == 0) {
                     exchangeRateRepositoryDao.save(rate);
                 } else return;
             }
