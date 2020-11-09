@@ -90,34 +90,32 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
     public void processingHttpRequest() throws IOException {
-        if (exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null ||
-                exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
-
-            URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            int status = con.getResponseCode();
-            if (status == HttpURLConnection.HTTP_OK) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
-                if (LocalDate.now().compareTo(rate.getDate()) > 0 &&
-                        exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
-                    logger.info("The current date is greater than the date of rate from the json-file. Updating the date in the json file data:  " + LocalDateTime.now() + ".");
-                    rate.setDate(LocalDate.now());
-                    exchangeRateRepositoryDao.save(rate);
-                } else if (LocalDate.now().compareTo(rate.getDate()) == 0 &&
-                        exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
-                    exchangeRateRepositoryDao.save(rate);
-                }
-                else if (LocalDate.now().compareTo(rate.getDate()) < 0 &&
-                        exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
-                    exchangeRateRepositoryDao.save(rate);
-                }
-                else return;
+//        if (exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null ||
+//                exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
+        URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        int status = con.getResponseCode();
+        if (status == HttpURLConnection.HTTP_OK) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
+            if (LocalDate.now().compareTo(rate.getDate()) > 0 &&
+                    exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
+                logger.info("The current date is greater than the date of rate from the json-file. Updating the date in the json file data:  " + LocalDateTime.now() + ".");
+                rate.setDate(LocalDate.now());
+                exchangeRateRepositoryDao.save(rate);
+            } else if (LocalDate.now().compareTo(rate.getDate()) == 0 &&
+                    exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
+                exchangeRateRepositoryDao.save(rate);
             }
-            logger.info("All records saved " + LocalDateTime.now() + ".");
+            else if (LocalDate.now().compareTo(rate.getDate()) < 0 &&
+                    exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
+                exchangeRateRepositoryDao.save(rate);
+            }
+            else return;
         }
-
+        logger.info("All records saved " + LocalDateTime.now() + ".");
+//        }
     }
 
 }
