@@ -102,8 +102,9 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
             if (status == HttpURLConnection.HTTP_OK) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
-                if (!(rate.getDate().toString().equals(LocalDate.now().toString()))) {
-                    logger.info("Date a rate from json-file and date the today not equals. Updating the date in the json file data:  " + LocalDateTime.now() + ".");
+//                if (!(rate.getDate().toString().equals(LocalDate.now().toString()))) {
+                if (LocalDate.now().compareTo(rate.getDate()) > 0) {
+                    logger.info("The current date is greater than the date of rate from the json-file. Updating the date in the json file data:  " + LocalDateTime.now() + ".");
                     rate.setDate(LocalDate.now());
                     exchangeRateRepositoryDao.save(rate);
                 } else {
