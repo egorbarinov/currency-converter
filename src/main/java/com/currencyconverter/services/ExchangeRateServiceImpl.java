@@ -90,9 +90,6 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
     public void processingHttpRequest() throws IOException {
-       // "Date": "2020-11-04T11:30:00+03:00",
-//        LocalDateTime date =LocalDate.now().atTime(0,0,0).atZone(ZoneId.of("+03:00")).toLocalDateTime();
-//        System.out.println(date); // 2020-11-03T11:30
         if (exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
 
             URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
@@ -102,16 +99,15 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
             if (status == HttpURLConnection.HTTP_OK) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
-//                if (!(rate.getDate().toString().equals(LocalDate.now().toString()))) {
                 if (LocalDate.now().compareTo(rate.getDate()) > 0) {
                     logger.info("The current date is greater than the date of rate from the json-file. Updating the date in the json file data:  " + LocalDateTime.now() + ".");
                     rate.setDate(LocalDate.now());
                     exchangeRateRepositoryDao.save(rate);
-                } else {
+                } else if (LocalDate.now().compareTo(rate.getDate()) < 0) {
                     exchangeRateRepositoryDao.save(rate);
-                }
-                logger.info("All records saved " + LocalDateTime.now() + ".");
+                } else return;
             }
+            logger.info("All records saved " + LocalDateTime.now() + ".");
         }
 
     }
