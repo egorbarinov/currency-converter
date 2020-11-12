@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Конвертер валют</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <div>
+        <img src="/statico/img/currency.jpg/">
+    </div>
+
+    <div th:replace="~{navigation :: navigation(converter)}"/>
+    <div class="row justify-content-center">
+        <td><h4><p> <span Пользователь с логином th:text="${name}"> name </span> не подтвердил учетную запись. </p></h4></td>
+        <td><h4><p> Для активации необходимо перейти по ссылке в письме, направленном на email пользователя.</p></h4></td>
+    </div>
+    </div>
+</div>
+</body>
+</html>
