@@ -1,20 +1,18 @@
 package com.currencyconverter.controllers;
 
 import com.currencyconverter.dto.UserDto;
-import com.currencyconverter.model.User;
 import com.currencyconverter.services.UserService;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 
 @Controller
+@RequestMapping("/register")
 public class RegistrationController {
 
     private UserService userService;
@@ -29,20 +27,18 @@ public class RegistrationController {
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
-    @GetMapping("/register")
+    @GetMapping
     public String registration(Model model) {
         model.addAttribute("userForm", new UserDto());
 
         return "register";
     }
 
-    @PostMapping("/register")
+    @PostMapping
     public String processRegistrationForm(@Valid @ModelAttribute("userForm") UserDto userForm,
                                           BindingResult bindingResult, Model model) {
-
         model.addAttribute("userForm", userForm);
-
-        if (userForm.getUsername() == null || userForm.getPassword() == null || userForm.getPasswordConfirm() == null || userForm.getEmail() == null ) {
+        if (userForm.getUsername() == null || userForm.getPassword() == null || userForm.getPasswordConfirm() == null || userForm.getEmail() == null) {
             model.addAttribute("errorForm", "Все поля должны быть заполнены");
             return "register";
         }
@@ -52,7 +48,6 @@ public class RegistrationController {
             return "register";
         }
         //если нового пользователя нет в базе то заводим его
-//        User existing = userService.findByUsername(userForm.getUsername());
         boolean existing = userService.existByName(userForm.getUsername());
         if (existing) {
             userForm.setUsername(null);
@@ -61,7 +56,6 @@ public class RegistrationController {
             return "register";
         }
 
-//        User existingByEmail = userService.findByUserEmail(userForm.getEmail());
         existing = userService.existByEmail(userForm.getEmail());
         if (existing) {
             userForm.setEmail(null);
@@ -69,7 +63,7 @@ public class RegistrationController {
             return "register";
         }
 
-        if (!userForm.getPassword().equals(userForm.getPasswordConfirm())){
+        if (!userForm.getPassword().equals(userForm.getPasswordConfirm())) {
             userForm.setPassword(null);
             userForm.setPasswordConfirm(null);
             model.addAttribute("passwordError", "Пароли не совпадают!");
@@ -78,7 +72,14 @@ public class RegistrationController {
 
         userService.saveUser(userForm);
         return "solution";
+    }
 
+    @GetMapping("/activate/{code}")
+    public String activateUser(Model model, @PathVariable("code") String activateCode) {
+        boolean activated = userService.activateUser(activateCode);
+        model.addAttribute("activated", activated);
+        return "activate-user";
     }
 
 }
+

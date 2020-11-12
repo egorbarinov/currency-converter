@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class UserDto {
 
     private String username;
     private String password;
     private String passwordConfirm;
     private String email;
+    private boolean activated;
 
 }

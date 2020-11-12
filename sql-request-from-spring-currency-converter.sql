@@ -45,6 +45,7 @@ create table valcurs.users (
     email varchar(50) unique,
     enabled boolean,
     role varchar(255),
+    activate_code varchar(80),
     primary key (id)
 );
 

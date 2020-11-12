@@ -4,7 +4,7 @@ import com.currencyconverter.dto.ValuteDto;
 import com.currencyconverter.model.ExchangeRate;
 import com.currencyconverter.model.Valute;
 import com.currencyconverter.mapper.ValuteMapper;
-import com.currencyconverter.dao.ExchangeRateRepositoryDao;
+import com.currencyconverter.dao.ExchangeRateRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private final ValuteMapper mapper = ValuteMapper.MAPPER;
 
-    private ExchangeRateRepositoryDao exchangeRateRepositoryDao;
+    private ExchangeRateRepository exchangeRateRepository;
 
     private final static Logger logger = LoggerFactory.getLogger(ExchangeRate.class);
 
@@ -35,8 +35,8 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     }
 
     @Autowired
-    public void setExchangeRateRepositoryDao(ExchangeRateRepositoryDao exchangeRateRepositoryDao) {
-        this.exchangeRateRepositoryDao = exchangeRateRepositoryDao;
+    public void setExchangeRateRepository(ExchangeRateRepository exchangeRateRepository) {
+        this.exchangeRateRepository = exchangeRateRepository;
 
     }
 
@@ -44,7 +44,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     public List<ValuteDto> getAll() {
         LocalDate date =LocalDate.now();
-        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepositoryDao.findExchangeRateByDate(date).getValute().values());
+        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepository.findExchangeRateByDate(date).getValute().values());
 //        lists.sort(new Comparator<ValuteDto>() {
 //            @Override
 //            public int compare(ValuteDto o1, ValuteDto o2) {
@@ -59,20 +59,20 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     public List<ValuteDto> getAll(LocalDate date) {
 //        LocalDate localDate = LocalDate.parse(date);
-        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepositoryDao.findExchangeRateByDate(date).getValute().values());
+        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepository.findExchangeRateByDate(date).getValute().values());
         lists.sort(Comparator.comparing(ValuteDto::getName));
         return lists;
     }
 
     @Override
     public Iterable<ExchangeRate> getAllExchangeRate() {
-        return exchangeRateRepositoryDao.findAll();
+        return exchangeRateRepository.findAll();
     }
 
     @Override
     public Map <String, Valute> getAllValute(LocalDate date) {
 //        return exchangeRateRepositoryDao.findById(date).get().getValute();
-        return exchangeRateRepositoryDao.findExchangeRateByDate(date).getValute();
+        return exchangeRateRepository.findExchangeRateByDate(date).getValute();
 
     }
 
@@ -84,7 +84,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     @Override
     public ExchangeRate findByDate(LocalDate date) {
-        return exchangeRateRepositoryDao.findExchangeRateByDate(date);
+        return exchangeRateRepository.findExchangeRateByDate(date);
     }
 
     /**
@@ -95,11 +95,12 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
     public void processingHttpRequest() throws IOException {
         LocalDate firstDate = LocalDate.of(2020,10,1);
-        if (exchangeRateRepositoryDao.findExchangeRateByDate(firstDate) == null) {
+        if (exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
             processingUploadData(firstDate);
         }
-        if (exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null ||
-                exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
+
+        if (exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null ||
+                exchangeRateRepository.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
 
             URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -109,17 +110,17 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
                 ObjectMapper objectMapper = new ObjectMapper();
                 ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
                 if (LocalDate.now().compareTo(rate.getDate()) > 0 &&
-                        exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
+                        exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
                     logger.info("The current date is greater than the date of rate from the json-file. Updating the date in the json file data:  " + LocalDateTime.now() + ".");
                     rate.setDate(LocalDate.now());
-                    exchangeRateRepositoryDao.save(rate);
+                    exchangeRateRepository.save(rate);
                 } else if (LocalDate.now().compareTo(rate.getDate()) == 0 &&
-                        exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
-                    exchangeRateRepositoryDao.save(rate);
+                        exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
+                    exchangeRateRepository.save(rate);
                 }
                 else if (LocalDate.now().compareTo(rate.getDate()) < 0 &&
-                        exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
-                    exchangeRateRepositoryDao.save(rate);
+                        exchangeRateRepository.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
+                    exchangeRateRepository.save(rate);
                 }
                 else return;
             }
@@ -128,10 +129,9 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     }
 
-
     private void processingUploadData(LocalDate date) throws IOException {
 //        LocalDate date = LocalDate.of(1993, 1,6); // Date when currency exchange rates started being saved;
-        if (exchangeRateRepositoryDao.findExchangeRateByDate(date) == null) {
+        if (exchangeRateRepository.findExchangeRateByDate(date) == null) {
             DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy/MM/dd");
             ObjectMapper objectMapper = new ObjectMapper();
             logger.info("Ready records rates: " + LocalDateTime.now() + ".");
@@ -143,19 +143,18 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
                 int status = con.getResponseCode();
                 if (status == HttpURLConnection.HTTP_OK) {
                     ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
-                    exchangeRateRepositoryDao.save(rate);
+                    exchangeRateRepository.save(rate);
                     logger.info("All records rates for today is saved! " + LocalDateTime.now() + ".");
                 } else if (status == HttpURLConnection.HTTP_NOT_FOUND) {
-                    ExchangeRate rate  = exchangeRateRepositoryDao.findExchangeRateByDate(date.minusDays(1));
+                    ExchangeRate rate  = exchangeRateRepository.findExchangeRateByDate(date.minusDays(1));
                     rate.setDate(date);
-                    exchangeRateRepositoryDao.save(rate);
+                    exchangeRateRepository.save(rate);
                 }
                 date = date.plusDays(1);
 
             }
             logger.info("All records rates for today is saved! " + LocalDateTime.now() + ".");
         }
-
 
     }
 

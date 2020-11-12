@@ -54,6 +54,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "id"))
     public List<AuditEntry> auditEntries;
 
+    @Column(name = "activate_code")
+    private String activateCode;
+
+
+
     public void addNewAuditEntry(String queryString) {
         AuditEntry newEntry = createNewAuditEntry(queryString);
         if (this.auditEntries.size() == 100)

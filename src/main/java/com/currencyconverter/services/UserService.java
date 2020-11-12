@@ -16,11 +16,12 @@ public interface UserService extends UserDetailsService {
     boolean existByEmail(String username);
     User findByUserEmail(String email);
     List<UserDto> getAll();
-//    Iterable<User> getAllUser();
     User addAuditEntry(String principal, String queryString);
     User getAuditHistoryForUser(String username);
     User createNewQueryHistoryForUser(Principal principal);
     User saveQueryHistory(User queryHistoryForUser);
     void saveUser(UserDto userDto);
+    boolean activateUser(String activateCode);
+
 
 }

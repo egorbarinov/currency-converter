@@ -1,5 +1,7 @@
 server:
+  hostname: localhost
   port: ${PORT:8189}
+
   servlet:
     context-path: /
 
@@ -18,7 +20,7 @@ spring:
           use_jdbc_metadata_defaults: false
         id:
           new_generator_mappings: false
-#    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+
 
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -26,4 +28,17 @@ spring:
     username: ${JDBC_DATABASE_USERNAME:postgres}
     password: ${JDBC_DATABASE_PASSWORD:password}
 
-#    spring.jpa.database-platform=org.hibernate.dialect.PostgreSQL9Dialect
+
+mail:
+  server:
+    host: smtp.gmail.com
+    port: 25
+    username: egor.barinov@gmail.com
+    password: ${hidden.email.password}
+#    password: ${password:@#Vb2012#}
+
+
+
+
+
+

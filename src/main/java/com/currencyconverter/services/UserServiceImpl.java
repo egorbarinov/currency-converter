@@ -3,7 +3,7 @@ package com.currencyconverter.services;
 import com.currencyconverter.dto.UserDto;
 import com.currencyconverter.model.Role;
 import com.currencyconverter.model.User;
-import com.currencyconverter.dao.UserRepositoryDao;
+import com.currencyconverter.dao.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,35 +14,36 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private UserRepositoryDao userRepositoryDAO;
+    private UserRepository userRepository;
+	private final MailSenderService mailSenderService;
 
-	@Autowired
-	public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
+	public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository, MailSenderService mailSenderService) {
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-	}
-
-	@Autowired
-	public void setUserRepositoryDAO(UserRepositoryDao userRepositoryDAO) {
-		this.userRepositoryDAO = userRepositoryDAO;
+		this.userRepository = userRepository;
+		this.mailSenderService = mailSenderService;
 	}
 
 	@Override
 	public User findByUsername(String username) {
-	return userRepositoryDAO.findByUsername(username);
+	return userRepository.findByUsername(username);
 	}
 
 	@Override
 	public User findByUserEmail(String email) {
-		return userRepositoryDAO.findByEmail(email);
+		return userRepository.findByEmail(email);
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public List<UserDto> getAll() {
-		return userRepositoryDAO.findAll().stream()
+		return userRepository.findAll().stream()
 				.map(this::toDto)
 				.collect(Collectors.toList());
 	}
@@ -104,7 +105,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Override
 	public User addAuditEntry(String username, String queryString) {
 		logger.debug("Adding Audit for user " + username + " ::" + queryString);
-		User queryHistoryForUser = userRepositoryDAO.findByUsername(username);
+		User queryHistoryForUser = userRepository.findByUsername(username);
 		queryHistoryForUser.addNewAuditEntry(queryString);
 		saveQueryHistory(queryHistoryForUser);
 
@@ -113,7 +114,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User getAuditHistoryForUser(String username) {
-		User queryHistory = userRepositoryDAO.findByUsername(username);
+		User queryHistory = userRepository.findByUsername(username);
 		return queryHistory;
 	}
 
@@ -124,25 +125,49 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User saveQueryHistory(User queryHistoryForUser) {
-		return userRepositoryDAO.save(queryHistoryForUser);
+		return userRepository.save(queryHistoryForUser);
 	}
 
+	@Override
+	@Transactional
 	public void saveUser(UserDto userDto) {
 		User user = User.builder()
 				.username(userDto.getUsername())
 				.password(bCryptPasswordEncoder.encode(userDto.getPassword()))
 				.email(userDto.getEmail())
 				.role(Role.CLIENT)
-				.enabled(true)
+				.activateCode(UUID.randomUUID().toString())
+				.enabled(false)
 				.build();
-		userRepositoryDAO.save(user);
+		userRepository.save(user);
+		if(user.getActivateCode() != null && !user.getActivateCode().isEmpty()){
+			new Thread(() -> mailSenderService.sendActivateCode(user)).start();
+		}
 	}
 
 	private UserDto toDto(User user){
 		return UserDto.builder()
 				.username(user.getUsername())
 				.email(user.getEmail())
+				.activated(user.getActivateCode() == null)
 				.build();
+	}
+
+	@Override
+	@Transactional
+	public boolean activateUser(String activateCode) {
+		if(activateCode == null || activateCode.isEmpty()){
+			return false;
+		}
+		User user = userRepository.findByActivateCode(activateCode);
+		if(user == null){
+			return false;
+		}
+		user.setActivateCode(null);
+		user.setEnabled(true);
+		userRepository.save(user);
+
+		return true;
 	}
 
 }
