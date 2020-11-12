@@ -17,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -29,6 +30,9 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     private ExchangeRateRepositoryDao exchangeRateRepositoryDao;
 
     private final static Logger logger = LoggerFactory.getLogger(ExchangeRate.class);
+
+    public ExchangeRateServiceImpl() throws IOException {
+    }
 
     @Autowired
     public void setExchangeRateRepositoryDao(ExchangeRateRepositoryDao exchangeRateRepositoryDao) {
@@ -90,32 +94,69 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
     public void processingHttpRequest() throws IOException {
-//        if (exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null ||
-//                exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
-        URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("GET");
-        int status = con.getResponseCode();
-        if (status == HttpURLConnection.HTTP_OK) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
-            if (LocalDate.now().compareTo(rate.getDate()) > 0 &&
-                    exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
-                logger.info("The current date is greater than the date of rate from the json-file. Updating the date in the json file data:  " + LocalDateTime.now() + ".");
-                rate.setDate(LocalDate.now());
-                exchangeRateRepositoryDao.save(rate);
-            } else if (LocalDate.now().compareTo(rate.getDate()) == 0 &&
-                    exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
-                exchangeRateRepositoryDao.save(rate);
-            }
-            else if (LocalDate.now().compareTo(rate.getDate()) < 0 &&
-                    exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
-                exchangeRateRepositoryDao.save(rate);
-            }
-            else return;
+        LocalDate firstDate = LocalDate.of(2020,10,1);
+        if (exchangeRateRepositoryDao.findExchangeRateByDate(firstDate) == null) {
+            processingUploadData(firstDate);
         }
-        logger.info("All records saved " + LocalDateTime.now() + ".");
-//        }
+        if (exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null ||
+                exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
+
+            URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            int status = con.getResponseCode();
+            if (status == HttpURLConnection.HTTP_OK) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
+                if (LocalDate.now().compareTo(rate.getDate()) > 0 &&
+                        exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
+                    logger.info("The current date is greater than the date of rate from the json-file. Updating the date in the json file data:  " + LocalDateTime.now() + ".");
+                    rate.setDate(LocalDate.now());
+                    exchangeRateRepositoryDao.save(rate);
+                } else if (LocalDate.now().compareTo(rate.getDate()) == 0 &&
+                        exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now()) == null) {
+                    exchangeRateRepositoryDao.save(rate);
+                }
+                else if (LocalDate.now().compareTo(rate.getDate()) < 0 &&
+                        exchangeRateRepositoryDao.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
+                    exchangeRateRepositoryDao.save(rate);
+                }
+                else return;
+            }
+            logger.info("All records saved " + LocalDateTime.now() + ".");
+        }
+
+    }
+
+
+    private void processingUploadData(LocalDate date) throws IOException {
+//        LocalDate date = LocalDate.of(1993, 1,6); // Date when currency exchange rates started being saved;
+        if (exchangeRateRepositoryDao.findExchangeRateByDate(date) == null) {
+            DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+            ObjectMapper objectMapper = new ObjectMapper();
+            logger.info("Ready records rates: " + LocalDateTime.now() + ".");
+
+            while (date.compareTo(LocalDate.now()) < 0) {
+                URL url = new URL("https://www.cbr-xml-daily.ru/archive/" + date.format(formatters) + "/daily_json.js");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                int status = con.getResponseCode();
+                if (status == HttpURLConnection.HTTP_OK) {
+                    ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
+                    exchangeRateRepositoryDao.save(rate);
+                    logger.info("All records rates for today is saved! " + LocalDateTime.now() + ".");
+                } else if (status == HttpURLConnection.HTTP_NOT_FOUND) {
+                    ExchangeRate rate  = exchangeRateRepositoryDao.findExchangeRateByDate(date.minusDays(1));
+                    rate.setDate(date);
+                    exchangeRateRepositoryDao.save(rate);
+                }
+                date = date.plusDays(1);
+
+            }
+            logger.info("All records rates for today is saved! " + LocalDateTime.now() + ".");
+        }
+
+
     }
 
 }

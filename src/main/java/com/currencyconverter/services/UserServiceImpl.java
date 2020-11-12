@@ -127,41 +127,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		return userRepositoryDAO.save(queryHistoryForUser);
 	}
 
-//	public boolean saveUser(UserDto userDto) {
-//		User userFromDB = userRepositoryDAO.findByUsername(userDto.getUsername());
-//
-//		boolean created = true;
-//		if (userFromDB != null) {
-//			created = false;
-//		}
-//
-//		userFromDB = userRepositoryDAO.findByEmail(userDto.getEmail());
-//		if (userFromDB != null) {
-//			created = false;
-//		} else created = true;
-//
-//		if (created) {
-//			User user = User.builder()
-//					.username(userDto.getUsername())
-//					.password(bCryptPasswordEncoder.encode(userDto.getPassword()))
-//					.email(userDto.getEmail())
-//					.role(Role.CLIENT)
-//					.enabled(false)
-//					.build();
-//			userRepositoryDAO.save(user);
-//			return true;
-//		}
-//		return false;
-//
-//	}
-
 	public void saveUser(UserDto userDto) {
 		User user = User.builder()
 				.username(userDto.getUsername())
 				.password(bCryptPasswordEncoder.encode(userDto.getPassword()))
 				.email(userDto.getEmail())
 				.role(Role.CLIENT)
-				.enabled(false)
+				.enabled(true)
 				.build();
 		userRepositoryDAO.save(user);
 	}

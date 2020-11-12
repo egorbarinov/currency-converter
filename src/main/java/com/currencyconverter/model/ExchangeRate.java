@@ -53,9 +53,47 @@ public class ExchangeRate {
     private LocalDateTime timestamp;
 
     @JsonProperty("Valute")
-    @ManyToMany(targetEntity = Valute.class, cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = Valute.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @CollectionTable(schema = "valcurs", name = "rate_valute_mapping", joinColumns = {@JoinColumn(name = "course_date", referencedColumnName = "date")})
     private Map<String, Valute> valute;
 
+    public LocalDate getDate() {
+        return date;
+    }
 
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalDateTime getPreviousDate() {
+        return previousDate;
+    }
+
+    public void setPreviousDate(LocalDateTime previousDate) {
+        this.previousDate = previousDate;
+    }
+
+    public String getPreviousURL() {
+        return previousURL;
+    }
+
+    public void setPreviousURL(String previousURL) {
+        this.previousURL = previousURL;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Map<String, Valute> getValute() {
+        return valute;
+    }
+
+    public void setValute(Map<String, Valute> valute) {
+        this.valute = valute;
+    }
 }
