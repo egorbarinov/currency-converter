@@ -66,7 +66,11 @@ public class ExchangeRateController {
             date_req = LocalDate.now().toString();
             model.addAttribute("requestDate", date_req);
             model.addAttribute("date", date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
-            model.addAttribute("currencies", exchangeRateService.getAll(date));
+            try {
+                model.addAttribute("currencies", exchangeRateService.getAll(date));
+            } catch (RuntimeException ex) {
+                model.addAttribute("responseError", "Данные по курсам валют на запрашиваемую дату отсутствуют в базе данных.");
+            }
         }
         else {
             LocalDate localDate = LocalDate.parse(date_req);
@@ -74,7 +78,7 @@ public class ExchangeRateController {
             model.addAttribute("requestDate", date_req);
             try {
                 model.addAttribute("currencies", exchangeRateService.getAll(localDate));
-            } catch (NullPointerException ex) {
+            } catch (RuntimeException ex) {
                 model.addAttribute("responseError", "Данные по курсам валют на запрашиваемую дату отсутствуют в базе данных.");
             }
         }
