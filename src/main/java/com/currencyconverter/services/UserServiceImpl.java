@@ -1,12 +1,12 @@
 package com.currencyconverter.services;
 
 import com.currencyconverter.dto.UserDto;
+import com.currencyconverter.model.AuditEntry;
 import com.currencyconverter.model.Role;
 import com.currencyconverter.model.User;
 import com.currencyconverter.dao.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,10 +103,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public User addAuditEntry(String username, String queryString) {
 		logger.debug("Adding Audit for user " + username + " ::" + queryString);
 		User queryHistoryForUser = userRepository.findByUsername(username);
-		queryHistoryForUser.addNewAuditEntry(queryString);
+		addNewAuditEntry(queryHistoryForUser, queryString);
 		saveQueryHistory(queryHistoryForUser);
 
 		return queryHistoryForUser;
+	}
+
+	public void addNewAuditEntry(User user, String queryString) {
+		AuditEntry newEntry = createNewAuditEntry(queryString);
+		if (user.auditEntries.size() == 100)
+			user.auditEntries.remove(99);
+		user.auditEntries.add(0,newEntry);
+	}
+
+	public AuditEntry createNewAuditEntry(String queryString) {
+		return new AuditEntry(queryString, new Date());
 	}
 
 	@Override

@@ -57,19 +57,6 @@ public class User {
     @Column(name = "activate_code")
     private String activateCode;
 
-
-
-    public void addNewAuditEntry(String queryString) {
-        AuditEntry newEntry = createNewAuditEntry(queryString);
-        if (this.auditEntries.size() == 100)
-            this.auditEntries.remove(99);
-        this.auditEntries.add(0,newEntry);
-    }
-
-    public AuditEntry createNewAuditEntry(String queryString) {
-        return new AuditEntry(queryString, new Date());
-    }
-
     public User(String username) {
         this.username = username;
     }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @Controller
-@RequestMapping("/register")
+//@RequestMapping("/register")
 public class RegistrationController {
 
     private UserService userService;
@@ -27,14 +27,14 @@ public class RegistrationController {
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
-    @GetMapping
+    @GetMapping("/register")
     public String registration(Model model) {
         model.addAttribute("userForm", new UserDto());
 
         return "register";
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public String processRegistrationForm(@Valid @ModelAttribute("userForm") UserDto userForm,
                                           BindingResult bindingResult, Model model) {
         model.addAttribute("userForm", userForm);

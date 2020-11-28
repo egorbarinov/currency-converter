@@ -25,6 +25,10 @@
                     <a class="nav-link" th:href="@{/history}">История запросов на конвертацию</a>
                 </li>
 
+<!--                <li class="nav-item" th:classappend="${activeTab == 'register' ? 'active' : ''}" sec:authorize="hasRole('ADMIN')">">-->
+<!--                    <a class="nav-link" th:href="@{/register}">Регистрация</a>-->
+<!--                </li>-->
+
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <form th:action="@{/logout}" method="POST">
                         <input type="submit" class="btn btn-danger" value="Logout" />

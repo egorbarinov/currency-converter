@@ -3,7 +3,7 @@ server:
   port: ${PORT:8189}
 
   servlet:
-    context-path: /app
+    context-path: /
 
 spring:
   mvc:
