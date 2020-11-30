@@ -11,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema = "valcurs", name="users_audit_entries")
+@Table(schema = "xml_valcurs", name="users_audit_entries")
 public class AuditEntry {
 
 	@Id

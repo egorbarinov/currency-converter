@@ -10,14 +10,14 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.Date;
 import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(schema = "valcurs", name = "users")
+@Table(schema = "xml_valcurs", name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +49,7 @@ public class User {
 
     @OneToMany(targetEntity = AuditEntry.class,
             cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(schema= "valcurs", name = "entry_query",
+    @JoinTable(schema= "xml_valcurs", name = "entry_query",
             joinColumns = @JoinColumn(name = "users_audit_entries"),
             inverseJoinColumns = @JoinColumn(name = "id"))
     public List<AuditEntry> auditEntries;

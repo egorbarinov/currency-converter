@@ -10,7 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.xml.sax.SAXException;
+
 import javax.validation.Valid;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -27,7 +30,7 @@ public class ExchangeRateController {
     private final UserServiceImpl userService;
     private final LocalDate date = LocalDate.now();
 
-    public ExchangeRateController(ExchangeRateService exchangeRateService, DelegatorService delegatorService, UserServiceImpl userService) throws IOException {
+    public ExchangeRateController(ExchangeRateService exchangeRateService, DelegatorService delegatorService, UserServiceImpl userService) throws IOException, ParserConfigurationException, SAXException {
         this.exchangeRateService = exchangeRateService;
         this.delegatorService = delegatorService;
         this.userService = userService;
@@ -44,17 +47,6 @@ public class ExchangeRateController {
     public String login() {
         return "login";
     }
-
-
-//    @GetMapping({"/","/index"})
-//    public String index(Model model) {
-//
-////        model.addAttribute("currencies", exchangeRateService.getAllValute(LocalDate.now()));
-////        model.addAttribute("currencies", exchangeRateService.getAll());
-//        model.addAttribute("standardDate", LocalDateTime.now());
-//        model.addAttribute("currencies", exchangeRateService.getAll(LocalDate.now()));
-//        return "index";
-//    }
 
     // http://localhost:8189/index/daily/?date_req=2020-11-05
     // http://localhost:8189/index/daily/?date_req=06.11.2020  не работает потому как в базе хранится в виде 2020-11-06

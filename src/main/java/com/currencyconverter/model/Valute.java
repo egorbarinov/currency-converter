@@ -1,7 +1,5 @@
 package com.currencyconverter.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,42 +11,32 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema = "valcurs", name="currencies")
-@JsonPropertyOrder({
-        "ID",
-        "NumCode",
-        "CharCode",
-        "Nominal",
-        "Name",
-        "Value",
-        "Previous"
-})
+@Table(schema = "xml_valcurs", name="currencies")
 public class Valute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pk;
 
-    @JsonProperty("ID")
+    @Column(columnDefinition = "ID")
     private String id;
-    @JsonProperty("NumCode")
+    @Column(columnDefinition = "NumCode")
     private String numCode;
-    @JsonProperty("CharCode")
+    @Column(columnDefinition = "CharCode")
     private String charCode;
-    @JsonProperty("Nominal")
+    @Column(columnDefinition = "Nominal")
     private BigDecimal nominal;
-    @JsonProperty("Name")
+    @Column(columnDefinition = "Name")
     private String name;
-    @JsonProperty("Value")
+    @Column(columnDefinition = "Value")
     private BigDecimal value;
-    @JsonProperty("Previous")
-    private BigDecimal previous;
 
-//    public boolean isSelected(String ValuteCharCode){
-//        if (ValuteCharCode != null) {
-//            return ValuteCharCode.equals(charCode);
-//        }
-//        return false;
-//    }
-
+    public Valute(String id, String numCode, String charCode, BigDecimal nominal, String name, BigDecimal value) {
+        this.id = id;
+        this.numCode = numCode;
+        this.charCode = charCode;
+        this.nominal = nominal;
+        this.name = name;
+        this.value = value;
+    }
 }
