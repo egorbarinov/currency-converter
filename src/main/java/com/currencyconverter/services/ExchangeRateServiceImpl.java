@@ -161,20 +161,6 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
                 ExchangeRate rate = new ExchangeRate();
                 for (int i = 0; i < valcurs.getLength(); i++) {
 
-//                    Node node = valcurs.item(i);
-//                    Element element = (Element) node;
-//                    String id = element.getAttribute("ID");
-//                    String numCode = element.getElementsByTagName("NumCode").item(0).getTextContent();
-//                    String charCode = element.getElementsByTagName("CharCode").item(0).getTextContent();
-//                    BigDecimal nominal = new BigDecimal(element.getElementsByTagName("Nominal").item(0).getTextContent().replaceAll(",", "\\."));
-//                    String name = element.getElementsByTagName("Name").item(0).getTextContent();
-//                    BigDecimal value = new BigDecimal(element.getElementsByTagName("Value").item(0).getTextContent().replaceAll(",", "\\."));
-//
-//                    Valute valute = new Valute(id, numCode, charCode, nominal, name, value);
-//                    valutesMap.put(id, valute);
-//                    rate.setDate(localDate);
-//                    rate.setValute(valutesMap);
-
                     Node node = valcurs.item(i);
                     String id = node.getAttributes().getNamedItem("ID").getNodeValue();
                     String numCode = document.getDocumentElement().getElementsByTagName("NumCode").item(i).getTextContent();
