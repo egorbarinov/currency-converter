@@ -10,7 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.xml.sax.SAXException;
+
 import javax.validation.Valid;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -27,7 +30,7 @@ public class ExchangeRateController {
     private final UserServiceImpl userService;
     private final LocalDate date = LocalDate.now();
 
-    public ExchangeRateController(ExchangeRateService exchangeRateService, DelegatorService delegatorService, UserServiceImpl userService) throws IOException {
+    public ExchangeRateController(ExchangeRateService exchangeRateService, DelegatorService delegatorService, UserServiceImpl userService) throws IOException, ParserConfigurationException, SAXException {
         this.exchangeRateService = exchangeRateService;
         this.delegatorService = delegatorService;
         this.userService = userService;
