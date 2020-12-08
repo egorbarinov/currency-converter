@@ -54,7 +54,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     public List<ValuteDto> getAll() {
         LocalDate date =LocalDate.now();
-        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepository.findExchangeRateByDate(date).getValute().values());
+        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepository.findExchangeRateByDate(date).getValutes());
 //        lists.sort(new Comparator<ValuteDto>() {
 //            @Override
 //            public int compare(ValuteDto o1, ValuteDto o2) {
@@ -69,7 +69,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     public List<ValuteDto> getAll(LocalDate date) {
 //        LocalDate localDate = LocalDate.parse(date);
-        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepository.findExchangeRateByDate(date).getValute().values());
+        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepository.findExchangeRateByDate(date).getValutes());
         lists.sort(Comparator.comparing(ValuteDto::getName));
         return lists;
     }
@@ -79,18 +79,6 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
         return exchangeRateRepository.findAll();
     }
 
-    @Override
-    public Map <String, Valute> getAllValute(LocalDate date) {
-//        return exchangeRateRepositoryDao.findById(date).get().getValute();
-        return exchangeRateRepository.findExchangeRateByDate(date).getValute();
-
-    }
-
-//    @Override
-//    public ExchangeRate findById() {
-//        LocalDate date =LocalDate.now();
-//        return exchangeRateRepositoryDao.findById(date).get();
-//    }
 
     @Override
     public ExchangeRate findByDate(LocalDate date) {
@@ -105,14 +93,8 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
     public void processingHttpRequest() throws IOException, ParserConfigurationException, SAXException {
 
-        if (exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
-
             DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
             URL url = new URL("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + LocalDate.now().format(formatters));
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = dbFactory.newDocumentBuilder();
-            Document document =builder.parse(String.valueOf(url));
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
@@ -123,71 +105,8 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
                 ExchangeRate rate = xmlMapper.readValue(url, ExchangeRate.class);
                 exchangeRateRepository.save(rate);
                 logger.info("All record saved!");
-
-
-            }
         }
-//        LocalDate firstDate = LocalDate.of(2020,10,1);
-//        if (exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
-//            processingUploadData(firstDate);
-//        }
-//
-//        if (exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null ||
-//                exchangeRateRepository.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
-//
-//            URL url = new URL("https://www.cbr-xml-daily.ru/daily_json.js");
-//            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//            con.setRequestMethod("GET");
-//            int status = con.getResponseCode();
-//            if (status == HttpURLConnection.HTTP_OK) {
-//                ObjectMapper objectMapper = new ObjectMapper();
-//                ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
-//                if (LocalDate.now().compareTo(rate.getDate()) > 0 &&
-//                        exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
-//                    logger.info("The current date is greater than the date of rate from the json-file. Updating the date in the json file data:  " + LocalDateTime.now() + ".");
-//                    rate.setDate(LocalDate.now());
-//                    exchangeRateRepository.save(rate);
-//                } else if (LocalDate.now().compareTo(rate.getDate()) == 0 &&
-//                        exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
-//                    exchangeRateRepository.save(rate);
-//                }
-//                else if (LocalDate.now().compareTo(rate.getDate()) < 0 &&
-//                        exchangeRateRepository.findExchangeRateByDate(LocalDate.now().plusDays(1)) == null) {
-//                    exchangeRateRepository.save(rate);
-//                }
-//                else return;
-//            }
-//            logger.info("All records saved " + LocalDateTime.now() + ".");
-//        }
 
-    }
-
-    private void processingUploadData(LocalDate date) throws IOException {
-//        LocalDate date = LocalDate.of(1993, 1,6); // Date when currency exchange rates started being saved;
-        if (exchangeRateRepository.findExchangeRateByDate(date) == null) {
-            DateTimeFormatter formatters = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-            ObjectMapper objectMapper = new ObjectMapper();
-            logger.info("Ready records rates: " + LocalDateTime.now() + ".");
-
-            while (date.compareTo(LocalDate.now()) < 0) {
-                URL url = new URL("https://www.cbr-xml-daily.ru/archive/" + date.format(formatters) + "/daily_json.js");
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                con.setRequestMethod("GET");
-                int status = con.getResponseCode();
-                if (status == HttpURLConnection.HTTP_OK) {
-                    ExchangeRate rate = objectMapper.readValue(url, ExchangeRate.class);
-                    exchangeRateRepository.save(rate);
-                    logger.info("All records rates for today is saved! " + LocalDateTime.now() + ".");
-                } else if (status == HttpURLConnection.HTTP_NOT_FOUND) {
-                    ExchangeRate rate  = exchangeRateRepository.findExchangeRateByDate(date.minusDays(1));
-                    rate.setDate(date);
-                    exchangeRateRepository.save(rate);
-                }
-                date = date.plusDays(1);
-
-            }
-            logger.info("All records rates for today is saved! " + LocalDateTime.now() + ".");
-        }
 
     }
 

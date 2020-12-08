@@ -13,7 +13,7 @@ import java.util.Map;
 
 public interface ExchangeRateService {
     Iterable<ExchangeRate> getAllExchangeRate();
-    Map<String, Valute> getAllValute(LocalDate date);
+//    Map<String, Valute> getAllValute(LocalDate date);
     void processingHttpRequest() throws IOException, ParserConfigurationException, SAXException;
 //    ExchangeRate findById();
     ExchangeRate findByDate(LocalDate date);

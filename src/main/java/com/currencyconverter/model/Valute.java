@@ -13,16 +13,14 @@ import java.util.LinkedHashMap;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema = "valcurs", name="currencies")
+@Table(schema = "jxmlparse_valcurs", name="currencies")
 public class Valute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pk;
-//
+
     @JsonProperty("ID")
-
-
     private String id;
     @JsonProperty("NumCode")
     private String numCode;
