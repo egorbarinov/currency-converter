@@ -20,7 +20,7 @@ public class DelegatorService {
     }
 
     /**
-     * метод для выполнения конвертации данных, присваивающий сущности результат и дату выполнения операции
+     * метод для выполнения конвертации данных, присваивающий DTO-объекту результат и дату выполнения операции
      */
     public void performCurrencyConversion(ValuteDto valuteDto, LocalDate date) {
         List<BigDecimal> valuesToDecimal = new ArrayList<>();
