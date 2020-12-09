@@ -109,16 +109,6 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
                 ExchangeRateDto rateDto = xmlMapper.readValue(url, ExchangeRateDto.class);
                 ExchangeRate rate = rateMapper.toExchangeRate(rateDto);
-
-//                rate.getValutes().get(i)getValue().replaceAll(",","\\.");
-
-
-//                List<ValuteDto> list = rateDto.getValutes();
-//                Iterator<ValuteDto> iterator = list.iterator();
-//                while (iterator.hasNext()) {
-//                    System.out.println(iterator.next().getCharCode());
-//                }
-
                 exchangeRateRepository.save(rate);
                 logger.info("All record saved!");
         }

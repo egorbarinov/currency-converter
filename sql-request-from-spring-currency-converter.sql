@@ -30,7 +30,7 @@ create table jxmlparse_valcurs.currencies (
     char_code varchar(255),
     nominal numeric,
     name varchar(255),
-    value varchar(255),
+    value numeric,
     primary key (pk));
 
 

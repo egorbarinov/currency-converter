@@ -1,5 +1,6 @@
 package com.currencyconverter.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.AllArgsConstructor;
@@ -36,8 +37,9 @@ public class Valute {
     @JacksonXmlProperty(localName = "Name")
     private String name;
 
-    @JacksonXmlProperty(localName = "Value")
-    private String value;
+//    @JacksonXmlProperty(localName = "Value")
+    @JsonProperty("Value")
+    private BigDecimal value;
 
 }
 

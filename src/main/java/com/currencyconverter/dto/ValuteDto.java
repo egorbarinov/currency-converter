@@ -42,9 +42,7 @@ public class ValuteDto {
     private String name;
 
     @JacksonXmlProperty(localName = "Value")
-    private String valueToString;
-
-    private String value;
+    private BigDecimal value;
 
     @NotBlank
     private String currencyFrom;
@@ -63,9 +61,8 @@ public class ValuteDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date conversionDate;
 
-    public void setValue(BigDecimal value) {
-
-        this.value = valueToString.replaceAll(",", "\\.");
+    public void setValue(String value) {
+        this.value = new BigDecimal(value.replaceAll(",", "\\."));
     }
 
     @Override
