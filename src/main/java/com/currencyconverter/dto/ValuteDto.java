@@ -1,9 +1,13 @@
 package com.currencyconverter.dto;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,13 +16,35 @@ import static com.currencyconverter.common.CurrencyConverterUtil.getFormattedAmo
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@JacksonXmlRootElement(localName = "Valute")
 public class ValuteDto {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JacksonXmlProperty(namespace = "pk")
     private Long pk;
+
+    @JacksonXmlProperty(localName = "ID", isAttribute = true)
+    private String id;
+
+    @JacksonXmlProperty(localName = "NumCode")
+    private String numCode;
+
+    @JacksonXmlProperty(localName = "CharCode")
     private String charCode;
+
+    @JacksonXmlProperty(localName = "Nominal")
     private BigDecimal nominal;
+
+    @JacksonXmlProperty(localName = "Name")
     private String name;
-    private BigDecimal value;
-    private BigDecimal previous;
+
+    @JacksonXmlProperty(localName = "Value")
+    private String valueToString;
+
+    private String value;
 
     @NotBlank
     private String currencyFrom;
@@ -36,6 +62,11 @@ public class ValuteDto {
     @Past
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date conversionDate;
+
+    public void setValue(BigDecimal value) {
+
+        this.value = valueToString.replaceAll(",", "\\.");
+    }
 
     @Override
     public String toString() {

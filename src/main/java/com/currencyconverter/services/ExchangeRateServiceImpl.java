@@ -1,6 +1,8 @@
 package com.currencyconverter.services;
 
+import com.currencyconverter.dto.ExchangeRateDto;
 import com.currencyconverter.dto.ValuteDto;
+import com.currencyconverter.mapper.ExchangeRateMapper;
 import com.currencyconverter.model.ExchangeRate;
 import com.currencyconverter.model.Valute;
 import com.currencyconverter.mapper.ValuteMapper;
@@ -37,6 +39,7 @@ import java.util.*;
 public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private final ValuteMapper mapper = ValuteMapper.MAPPER;
+    private final ExchangeRateMapper rateMapper = ExchangeRateMapper.MAPPER;
 
     private ExchangeRateRepository exchangeRateRepository;
 
@@ -104,15 +107,18 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
                 XmlMapper xmlMapper = new XmlMapper();
 
-                ExchangeRate rate = xmlMapper.readValue(url, ExchangeRate.class);
-//                Valute valute = xmlMapper.readValue(url, Valute.class);
+                ExchangeRateDto rateDto = xmlMapper.readValue(url, ExchangeRateDto.class);
+                ExchangeRate rate = rateMapper.toExchangeRate(rateDto);
 
 //                rate.getValutes().get(i)getValue().replaceAll(",","\\.");
-//                List<Valute> valutes = xmlMapper.readValue(url, new TypeReference<List<Valute>>() {
-//                });
-//                for (int i = 0; i < valutes.size(); i++) {
-//                    System.out.println(valutes.get(i).getValue());
+
+
+//                List<ValuteDto> list = rateDto.getValutes();
+//                Iterator<ValuteDto> iterator = list.iterator();
+//                while (iterator.hasNext()) {
+//                    System.out.println(iterator.next().getCharCode());
 //                }
+
                 exchangeRateRepository.save(rate);
                 logger.info("All record saved!");
         }

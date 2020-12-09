@@ -1,43 +1,42 @@
 package com.currencyconverter.model;
 
-import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.LinkedHashMap;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(schema = "jxmlparse_valcurs", name="currencies")
-@JacksonXmlRootElement(localName = "Valute")
+//@JacksonXmlRootElement(localName = "Valute")
 public class Valute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JacksonXmlProperty
-    @JsonProperty("valute_key")
+    @JacksonXmlProperty(namespace = "pk")
     private Long pk;
 
-    @JsonProperty("ID")
-    @JacksonXmlProperty(isAttribute = true)
-//    @JacksonXmlProperty(namespace = "ID")
+    @JacksonXmlProperty(localName = "ID", isAttribute = true)
     private String id;
-    @JsonProperty("NumCode")
+
+    @JacksonXmlProperty(localName = "NumCode")
     private String numCode;
-    @JsonProperty("CharCode")
+
+    @JacksonXmlProperty(localName = "CharCode")
     private String charCode;
-    @JsonProperty("Nominal")
+
+    @JacksonXmlProperty(localName = "Nominal")
     private BigDecimal nominal;
-    @JsonProperty("Name")
+
+    @JacksonXmlProperty(localName = "Name")
     private String name;
-    @JsonProperty("Value")
+
+    @JacksonXmlProperty(localName = "Value")
     private String value;
 
 }

@@ -18,8 +18,9 @@ CREATE TABLE jxmlparse_valcurs.course
 CREATE TABLE jxmlparse_valcurs.rate_valute_mapping
 (
     course_date timestamp without time zone,
-    valute_pk bigserial,
-    valute_key varchar(255)
+    valutes_pk bigserial
+--     valute_pk bigserial,
+--     valute_key varchar(255)
 );
 
 create table jxmlparse_valcurs.currencies (
