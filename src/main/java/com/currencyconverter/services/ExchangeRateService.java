@@ -9,14 +9,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 public interface ExchangeRateService {
-    Iterable<ExchangeRate> getAllExchangeRate();
-//    Map<String, Valute> getAllValute(LocalDate date);
-    void processingHttpRequest() throws IOException, ParserConfigurationException, SAXException;
-    ExchangeRate findByCharCode(String charCode);
-    ExchangeRate findByDate(LocalDate date);
+
+    void processingHttpRequest() throws IOException;
+    Valute findByCharCode(String charCode);
     List<ValuteDto> getAll();
     List<ValuteDto> getAll(LocalDate date);
 }

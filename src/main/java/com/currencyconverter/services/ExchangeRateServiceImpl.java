@@ -1,11 +1,13 @@
 package com.currencyconverter.services;
 
+import com.currencyconverter.dao.ValuteRepository;
 import com.currencyconverter.dto.ExchangeRateDto;
 import com.currencyconverter.dto.ValuteDto;
 import com.currencyconverter.mapper.ExchangeRateMapper;
 import com.currencyconverter.model.ExchangeRate;
 import com.currencyconverter.mapper.ValuteMapper;
 import com.currencyconverter.dao.ExchangeRateRepository;
+import com.currencyconverter.model.Valute;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -31,10 +35,16 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     private final ExchangeRateMapper rateMapper = ExchangeRateMapper.MAPPER;
 
     private ExchangeRateRepository exchangeRateRepository;
+    private ValuteRepository valuteRepository;
 
     private final static Logger logger = LoggerFactory.getLogger(ExchangeRate.class);
 
-    public ExchangeRateServiceImpl() throws IOException {
+//    public ExchangeRateServiceImpl() throws IOException {
+//    }
+
+    @Autowired
+    public void setValuteRepository(ValuteRepository valuteRepository) {
+        this.valuteRepository = valuteRepository;
     }
 
     @Autowired
@@ -61,35 +71,23 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     @Override
     public List<ValuteDto> getAll(LocalDate date) {
-//        LocalDate localDate = LocalDate.parse(date);
         List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepository.findExchangeRateByDate(date).getValutes());
         lists.sort(Comparator.comparing(ValuteDto::getName));
         return lists;
     }
 
     @Override
-    public Iterable<ExchangeRate> getAllExchangeRate() {
-        return exchangeRateRepository.findAll();
-    }
-
-
-    @Override
-    public ExchangeRate findByDate(LocalDate date) {
-        return exchangeRateRepository.findExchangeRateByDate(date);
-    }
-
-    @Override
-    public ExchangeRate findByCharCode(String charCode) {
-        return exchangeRateRepository.findExchangeRateByCharCode(charCode);
+    public Valute findByCharCode(String charCode) {
+        return valuteRepository.findByCharCode(charCode);
     }
 
     /**
-     * метод парсит данные из http-запроса и сохраняет их в базу данных
+     * метод парсит данные из http-запроса в DTO-object с помощью Jackson Xml Mapper. Вторым шагом метод создает Entity путем маппинга DTO-object , и  передает ее в базу данных
      * посредством библиотеки Jackson
      */
     @Override
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
-    public void processingHttpRequest() throws IOException, ParserConfigurationException, SAXException {
+    public void processingHttpRequest() throws IOException {
         if (exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
             DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             URL url = new URL("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + LocalDate.now().format(formatters));

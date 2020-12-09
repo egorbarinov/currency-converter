@@ -7,6 +7,5 @@ import java.time.LocalDate;
 
 public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, LocalDate> {
     ExchangeRate findExchangeRateByDate(LocalDate date);
-    ExchangeRate findExchangeRateByCharCode(String charCode);
 
 }

@@ -1,12 +1,10 @@
 package com.currencyconverter.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.AllArgsConstructor;
@@ -22,8 +20,6 @@ import java.util.List;
 @Entity
 @Table(schema="jxmlparse_valcurs", name = "course")
 
-//@JacksonXmlRootElement(localName = "ValCurs")
-//@JsonIgnoreProperties(value = {"name"})
 public class ExchangeRate {
 
     @Id

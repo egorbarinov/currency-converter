@@ -22,10 +22,11 @@ public class DelegatorService {
     /**
      * метод для выполнения конвертации данных, присваивающий сущности результат и дату выполнения операции
      */
-    public void performCurrencyConversion(ValuteDto valuteDto, LocalDate date) {
+    public void performCurrencyConversion(ValuteDto valuteDto) {
         List<BigDecimal> valuesToDecimal = new ArrayList<>();
-        addValuesToCurrency(date, valuesToDecimal, valuteDto.getCurrencyFrom());
-        addValuesToCurrency(date, valuesToDecimal, valuteDto.getCurrencyTo());
+
+        addValuesToCurrency(valuesToDecimal, valuteDto.getCurrencyFrom());
+        addValuesToCurrency(valuesToDecimal, valuteDto.getCurrencyTo());
 
         BigDecimal resultAmount = (valuesToDecimal.get(0))
                 .divide(valuesToDecimal.get(1), 10, RoundingMode.HALF_UP)
@@ -36,14 +37,15 @@ public class DelegatorService {
 
     }
 
-    private void addValuesToCurrency(LocalDate date, List<BigDecimal> valuesToDecimal, String currencyValue) {
+    private void addValuesToCurrency(List<BigDecimal> valuesToDecimal, String currencyValue) {
+
         if (currencyValue.equals("RUB")) {
             valuesToDecimal.add(BigDecimal.valueOf(1));
         } else {
-            BigDecimal result = exchangeRateService.getAllValute(date)
-                    .get(currencyValue).getValue()
-                    .divide(exchangeRateService.getAllValute(date)
-                            .get(currencyValue).getNominal());
+            BigDecimal result = exchangeRateService.findByCharCode(currencyValue)
+                    .getValue()
+                    .divide(exchangeRateService.findByCharCode(currencyValue).getNominal());
+
             valuesToDecimal.add(result);
         }
     }

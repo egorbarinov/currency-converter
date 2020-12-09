@@ -1,6 +1,7 @@
 package com.currencyconverter.controllers;
 
 import com.currencyconverter.dto.ValuteDto;
+import com.currencyconverter.model.ExchangeRate;
 import com.currencyconverter.services.DelegatorService;
 import com.currencyconverter.services.ExchangeRateService;
 import com.currencyconverter.services.UserServiceImpl;
@@ -20,6 +21,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -30,7 +34,7 @@ public class ExchangeRateController {
     private final UserServiceImpl userService;
     private final LocalDate date = LocalDate.now();
 
-    public ExchangeRateController(ExchangeRateService exchangeRateService, DelegatorService delegatorService, UserServiceImpl userService) throws IOException, ParserConfigurationException, SAXException {
+    public ExchangeRateController(ExchangeRateService exchangeRateService, DelegatorService delegatorService, UserServiceImpl userService) throws IOException {
         this.exchangeRateService = exchangeRateService;
         this.delegatorService = delegatorService;
         this.userService = userService;
@@ -96,7 +100,7 @@ public class ExchangeRateController {
             model.addAttribute("amountError", "Поле не может быть пустым. Введите значение!");
             return "converter";
         }
-        delegatorService.performCurrencyConversion(valuteDto, date);
+        delegatorService.performCurrencyConversion(valuteDto);
         delegatorService.performAudit(valuteDto, principal);
 
         return "converter";
