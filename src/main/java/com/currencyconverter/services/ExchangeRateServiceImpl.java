@@ -5,6 +5,7 @@ import com.currencyconverter.model.ExchangeRate;
 import com.currencyconverter.model.Valute;
 import com.currencyconverter.mapper.ValuteMapper;
 import com.currencyconverter.dao.ExchangeRateRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
@@ -102,10 +103,20 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
             if (status == HttpURLConnection.HTTP_OK) {
 
                 XmlMapper xmlMapper = new XmlMapper();
+
                 ExchangeRate rate = xmlMapper.readValue(url, ExchangeRate.class);
+//                Valute valute = xmlMapper.readValue(url, Valute.class);
+
+//                rate.getValutes().get(i)getValue().replaceAll(",","\\.");
+//                List<Valute> valutes = xmlMapper.readValue(url, new TypeReference<List<Valute>>() {
+//                });
+//                for (int i = 0; i < valutes.size(); i++) {
+//                    System.out.println(valutes.get(i).getValue());
+//                }
                 exchangeRateRepository.save(rate);
                 logger.info("All record saved!");
         }
+
 
 
     }

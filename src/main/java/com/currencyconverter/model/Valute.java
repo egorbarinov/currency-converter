@@ -31,7 +31,7 @@ public class Valute {
     @JsonProperty("Name")
     private String name;
     @JsonProperty("Value")
-    private BigDecimal value;
+    private String value;
 
 }
 
