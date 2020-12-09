@@ -38,6 +38,8 @@ public class ExchangeRateController {
         this.exchangeRateService = exchangeRateService;
         this.delegatorService = delegatorService;
         this.userService = userService;
+//        exchangeRateService.processingUploadData(LocalDate.of(1993, 1,6));
+        exchangeRateService.processingUploadData(LocalDate.of(2020, 11,15));
         exchangeRateService.processingHttpRequest();
     }
 

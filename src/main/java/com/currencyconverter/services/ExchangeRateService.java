@@ -13,6 +13,7 @@ import java.util.List;
 public interface ExchangeRateService {
 
     void processingHttpRequest() throws IOException;
+    void processingUploadData(LocalDate localDate) throws IOException;
     Valute findByCharCode(String charCode);
     List<ValuteDto> getAll();
     List<ValuteDto> getAll(LocalDate date);

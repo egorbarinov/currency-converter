@@ -15,14 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -97,15 +94,43 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
             int status = con.getResponseCode();
             if (status == HttpURLConnection.HTTP_OK) {
 
-                XmlMapper xmlMapper = new XmlMapper();
-
-                ExchangeRateDto rateDto = xmlMapper.readValue(url, ExchangeRateDto.class);
-                ExchangeRate rate = rateMapper.toExchangeRate(rateDto);
-                exchangeRateRepository.save(rate);
-                logger.info("All record saved!");
+                saveToExchangeRate(url);
             }
+        }
+    }
+
+    private void saveToExchangeRate(URL url) throws IOException {
+        XmlMapper xmlMapper = new XmlMapper();
+
+        ExchangeRateDto rateDto = xmlMapper.readValue(url, ExchangeRateDto.class);
+        ExchangeRate rate = rateMapper.toExchangeRate(rateDto);
+        exchangeRateRepository.save(rate);
+    }
+
+    @Override
+    public void processingUploadData(LocalDate date) throws IOException {
+//        LocalDate date = LocalDate.of(1993, 1,6); // Date when currency exchange rates started being saved;
+        if (exchangeRateRepository.findExchangeRateByDate(date) == null) {
+            logger.info("Ready records rates: " + LocalDateTime.now() + ".");
+
+            while (date.compareTo(LocalDate.now()) <= 0) {
+                DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                URL url = new URL("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + date.format(formatters));
+
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                int status = con.getResponseCode();
+                if (status == HttpURLConnection.HTTP_OK) {
+                    saveToExchangeRate(url);
+                } else if (status == HttpURLConnection.HTTP_NOT_FOUND) {
+                    System.out.println("HTTP NOT FOUND");
+                }
+                date = date.plusDays(1);
+            }
+            logger.info("All records rates for today is saved! " + LocalDateTime.now() + ".");
         }
 
     }
+
 
 }
