@@ -4,11 +4,8 @@ import com.currencyconverter.dto.ExchangeRateDto;
 import com.currencyconverter.dto.ValuteDto;
 import com.currencyconverter.mapper.ExchangeRateMapper;
 import com.currencyconverter.model.ExchangeRate;
-import com.currencyconverter.model.Valute;
 import com.currencyconverter.mapper.ValuteMapper;
 import com.currencyconverter.dao.ExchangeRateRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,20 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -89,6 +78,11 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
         return exchangeRateRepository.findExchangeRateByDate(date);
     }
 
+    @Override
+    public ExchangeRate findByCharCode(String charCode) {
+        return exchangeRateRepository.findExchangeRateByCharCode(charCode);
+    }
+
     /**
      * метод парсит данные из http-запроса и сохраняет их в базу данных
      * посредством библиотеки Jackson
@@ -96,7 +90,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
     public void processingHttpRequest() throws IOException, ParserConfigurationException, SAXException {
-
+        if (exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
             DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             URL url = new URL("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + LocalDate.now().format(formatters));
 
@@ -111,9 +105,8 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
                 ExchangeRate rate = rateMapper.toExchangeRate(rateDto);
                 exchangeRateRepository.save(rate);
                 logger.info("All record saved!");
+            }
         }
-
-
 
     }
 

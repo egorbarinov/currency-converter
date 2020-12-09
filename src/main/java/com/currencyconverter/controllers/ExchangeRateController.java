@@ -48,19 +48,6 @@ public class ExchangeRateController {
         return "login";
     }
 
-
-//    @GetMapping({"/","/index"})
-//    public String index(Model model) {
-//
-////        model.addAttribute("currencies", exchangeRateService.getAllValute(LocalDate.now()));
-////        model.addAttribute("currencies", exchangeRateService.getAll());
-//        model.addAttribute("standardDate", LocalDateTime.now());
-//        model.addAttribute("currencies", exchangeRateService.getAll(LocalDate.now()));
-//        return "index";
-//    }
-
-    // http://localhost:8189/index/daily/?date_req=2020-11-05
-    // http://localhost:8189/index/daily/?date_req=06.11.2020  не работает потому как в базе хранится в виде 2020-11-06
     @GetMapping({"/","/index"})
     public String index(Model model, @RequestParam(required = false, name = "date_req") String date_req) {
 

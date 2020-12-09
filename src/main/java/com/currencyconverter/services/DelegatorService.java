@@ -23,29 +23,29 @@ public class DelegatorService {
      * метод для выполнения конвертации данных, присваивающий сущности результат и дату выполнения операции
      */
     public void performCurrencyConversion(ValuteDto valuteDto, LocalDate date) {
-//        List<BigDecimal> valuesToDecimal = new ArrayList<>();
-//        addValuesToCurrency(date, valuesToDecimal, valuteDto.getCurrencyFrom());
-//        addValuesToCurrency(date, valuesToDecimal, valuteDto.getCurrencyTo());
-//
-//        BigDecimal resultAmount = (valuesToDecimal.get(0))
-//                .divide(valuesToDecimal.get(1), 10, RoundingMode.HALF_UP)
-//                .multiply(valuteDto.getAmountToConvert());
-//
-//        valuteDto.setConvertedAmount(resultAmount);
-//        valuteDto.setConversionDate(new Date());
+        List<BigDecimal> valuesToDecimal = new ArrayList<>();
+        addValuesToCurrency(date, valuesToDecimal, valuteDto.getCurrencyFrom());
+        addValuesToCurrency(date, valuesToDecimal, valuteDto.getCurrencyTo());
+
+        BigDecimal resultAmount = (valuesToDecimal.get(0))
+                .divide(valuesToDecimal.get(1), 10, RoundingMode.HALF_UP)
+                .multiply(valuteDto.getAmountToConvert());
+
+        valuteDto.setConvertedAmount(resultAmount);
+        valuteDto.setConversionDate(new Date());
 
     }
 
     private void addValuesToCurrency(LocalDate date, List<BigDecimal> valuesToDecimal, String currencyValue) {
-//        if (currencyValue.equals("RUB")) {
-//            valuesToDecimal.add(BigDecimal.valueOf(1));
-//        } else {
-//            BigDecimal result = exchangeRateService.getAllValute(date)
-//                    .get(currencyValue).getValue()
-//                    .divide(exchangeRateService.getAllValute(date)
-//                            .get(currencyValue).getNominal());
-//            valuesToDecimal.add(result);
-//        }
+        if (currencyValue.equals("RUB")) {
+            valuesToDecimal.add(BigDecimal.valueOf(1));
+        } else {
+            BigDecimal result = exchangeRateService.getAllValute(date)
+                    .get(currencyValue).getValue()
+                    .divide(exchangeRateService.getAllValute(date)
+                            .get(currencyValue).getNominal());
+            valuesToDecimal.add(result);
+        }
     }
 
     /**

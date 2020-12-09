@@ -15,7 +15,7 @@ public interface ExchangeRateService {
     Iterable<ExchangeRate> getAllExchangeRate();
 //    Map<String, Valute> getAllValute(LocalDate date);
     void processingHttpRequest() throws IOException, ParserConfigurationException, SAXException;
-//    ExchangeRate findById();
+    ExchangeRate findByCharCode(String charCode);
     ExchangeRate findByDate(LocalDate date);
     List<ValuteDto> getAll();
     List<ValuteDto> getAll(LocalDate date);
