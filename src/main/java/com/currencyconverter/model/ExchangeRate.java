@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,9 @@ import java.util.Map;
 @AllArgsConstructor
 @Entity
 @Table(schema="jxmlparse_valcurs", name = "course")
-@JsonIgnoreProperties(value = {"name", "ID"})
+
+@JacksonXmlRootElement(localName = "ValCurs")
+@JsonIgnoreProperties(value = {"name"})
 public class ExchangeRate {
 
     @Id
@@ -48,12 +51,20 @@ public class ExchangeRate {
 //    @JacksonXmlProperty(namespace = "Valute" )
     @JsonProperty("Valute")
 //    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    @OneToMany(targetEntity = Valute.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    OneToMany
-    @JoinTable(name = "rate_valute_mapping",
-    joinColumns = @JoinColumn(name = "course_date"),
-            inverseJoinColumns = @JoinColumn(name = "date"))
-//    @CollectionTable(schema = "jxmlparse_valcurs", name = "rate_valute_mapping", joinColumns = {@JoinColumn(name = "course_date", referencedColumnName = "date")})
+//    @OneToMany(targetEntity = Valute.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+////    OneToMany
+
+    @ManyToMany(cascade=CascadeType.ALL)
+//    @JoinTable(
+//            schema = "jxmlparse_valcurs",
+//            name = "rate_valute_mapping",
+//            joinColumns = @JoinColumn(name = "course_date"),
+//            inverseJoinColumns = @JoinColumn(name = "valute_key"))
+    @CollectionTable(schema = "jxmlparse_valcurs",
+            name = "rate_valute_mapping",
+            joinColumns = {@JoinColumn(name = "course_date",
+                    referencedColumnName = "date")})
+
     private List<Valute> valutes;
 
 
