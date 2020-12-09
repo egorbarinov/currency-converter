@@ -36,9 +36,6 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private final static Logger logger = LoggerFactory.getLogger(ExchangeRate.class);
 
-//    public ExchangeRateServiceImpl() throws IOException {
-//    }
-
     @Autowired
     public void setValuteRepository(ValuteRepository valuteRepository) {
         this.valuteRepository = valuteRepository;
@@ -68,14 +65,14 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     @Override
     public List<ValuteDto> getAll(LocalDate date) {
-        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepository.findExchangeRateByDate(date).getValutes());
+        List<ValuteDto> lists = mapper.fromValuteList(findExchangeRateByDate(date).getValutes());
         lists.sort(Comparator.comparing(ValuteDto::getName));
         return lists;
     }
 
     @Override
-    public Valute findByCharCode(String charCode) {
-        return valuteRepository.findByCharCode(charCode);
+    public ExchangeRate findExchangeRateByDate(LocalDate date) {
+        return exchangeRateRepository.findExchangeRateByDate(date);
     }
 
     /**
@@ -93,23 +90,22 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
             con.setRequestMethod("GET");
             int status = con.getResponseCode();
             if (status == HttpURLConnection.HTTP_OK) {
-
-                saveToExchangeRate(url);
+                saveToExchangeRate(url, LocalDate.now());
             }
         }
     }
 
-    private void saveToExchangeRate(URL url) throws IOException {
+    private void saveToExchangeRate(URL url, LocalDate date) throws IOException {
         XmlMapper xmlMapper = new XmlMapper();
 
         ExchangeRateDto rateDto = xmlMapper.readValue(url, ExchangeRateDto.class);
         ExchangeRate rate = rateMapper.toExchangeRate(rateDto);
+        rate.setDate(date);
         exchangeRateRepository.save(rate);
     }
 
     @Override
     public void processingUploadData(LocalDate date) throws IOException {
-//        LocalDate date = LocalDate.of(1993, 1,6); // Date when currency exchange rates started being saved;
         if (exchangeRateRepository.findExchangeRateByDate(date) == null) {
             logger.info("Ready records rates: " + LocalDateTime.now() + ".");
 
@@ -121,7 +117,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
                 con.setRequestMethod("GET");
                 int status = con.getResponseCode();
                 if (status == HttpURLConnection.HTTP_OK) {
-                    saveToExchangeRate(url);
+                    saveToExchangeRate(url, date);
                 } else if (status == HttpURLConnection.HTTP_NOT_FOUND) {
                     System.out.println("HTTP NOT FOUND");
                 }

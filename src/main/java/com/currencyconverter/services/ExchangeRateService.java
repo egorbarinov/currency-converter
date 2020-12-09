@@ -14,7 +14,7 @@ public interface ExchangeRateService {
 
     void processingHttpRequest() throws IOException;
     void processingUploadData(LocalDate localDate) throws IOException;
-    Valute findByCharCode(String charCode);
+    ExchangeRate findExchangeRateByDate(LocalDate date);
     List<ValuteDto> getAll();
     List<ValuteDto> getAll(LocalDate date);
 }

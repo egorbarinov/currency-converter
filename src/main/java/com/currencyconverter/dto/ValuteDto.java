@@ -65,9 +65,28 @@ public class ValuteDto {
         this.value = new BigDecimal(value.replaceAll(",", "\\."));
     }
 
+//    @Override
+//    public String toString() {
+//        return String.format("%s,%s", currencyFrom, currencyTo);
+//    }
+
+
     @Override
     public String toString() {
-        return String.format("%s,%s", currencyFrom, currencyTo);
+        return "ValuteDto{" +
+                "pk=" + pk +
+                ", id='" + id + '\'' +
+                ", numCode='" + numCode + '\'' +
+                ", charCode='" + charCode + '\'' +
+                ", nominal=" + nominal +
+                ", name='" + name + '\'' +
+                ", value=" + value +
+                ", currencyFrom='" + currencyFrom + '\'' +
+                ", currencyTo='" + currencyTo + '\'' +
+                ", amountToConvert=" + amountToConvert +
+                ", convertedAmount=" + convertedAmount +
+                ", conversionDate=" + conversionDate +
+                '}';
     }
 
     public String getAuditString() {

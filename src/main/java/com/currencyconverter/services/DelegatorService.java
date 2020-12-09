@@ -11,8 +11,8 @@ import java.util.*;
 @Component
 public class DelegatorService {
 
-    private ExchangeRateService exchangeRateService;
-    private UserServiceImpl userService;
+    private final ExchangeRateService exchangeRateService;
+    private final UserServiceImpl userService;
 
     public DelegatorService(ExchangeRateService exchangeRateService, UserServiceImpl userService) {
         this.exchangeRateService = exchangeRateService;
@@ -20,13 +20,13 @@ public class DelegatorService {
     }
 
     /**
-     * метод для выполнения конвертации данных, присваивающий сущности результат и дату выполнения операции
+     * метод для выполнения конвертации данных, присваивающий dto значения конвертации и даты
      */
-    public void performCurrencyConversion(ValuteDto valuteDto) {
+    public void performCurrencyConversion(ValuteDto valuteDto, LocalDate date) {
         List<BigDecimal> valuesToDecimal = new ArrayList<>();
 
-        addValuesToCurrency(valuesToDecimal, valuteDto.getCurrencyFrom());
-        addValuesToCurrency(valuesToDecimal, valuteDto.getCurrencyTo());
+        addValuesToCurrency(date, valuesToDecimal, valuteDto.getCurrencyFrom());
+        addValuesToCurrency(date, valuesToDecimal, valuteDto.getCurrencyTo());
 
         BigDecimal resultAmount = (valuesToDecimal.get(0))
                 .divide(valuesToDecimal.get(1), 10, RoundingMode.HALF_UP)
@@ -37,15 +37,13 @@ public class DelegatorService {
 
     }
 
-    private void addValuesToCurrency(List<BigDecimal> valuesToDecimal, String currencyValue) {
+    private void addValuesToCurrency(LocalDate date, List<BigDecimal> valuesToDecimal, String currencyValue) {
 
         if (currencyValue.equals("RUB")) {
             valuesToDecimal.add(BigDecimal.valueOf(1));
         } else {
-            BigDecimal result = exchangeRateService.findByCharCode(currencyValue)
-                    .getValue()
-                    .divide(exchangeRateService.findByCharCode(currencyValue).getNominal());
-
+            ValuteDto dto = exchangeRateService.getAll(date).stream().filter(v -> v.getCharCode().equals(currencyValue)).findFirst().orElseThrow();
+            BigDecimal result = dto.getValue().divide(dto.getNominal());
             valuesToDecimal.add(result);
         }
     }
