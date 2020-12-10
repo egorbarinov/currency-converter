@@ -1,13 +1,10 @@
 package com.currencyconverter.services;
 
 import com.currencyconverter.dao.ValuteRepository;
-import com.currencyconverter.dto.ExchangeRateDto;
 import com.currencyconverter.dto.ValuteDto;
-import com.currencyconverter.mapper.ExchangeRateMapper;
 import com.currencyconverter.model.ExchangeRate;
 import com.currencyconverter.mapper.ValuteMapper;
 import com.currencyconverter.dao.ExchangeRateRepository;
-import com.currencyconverter.model.Valute;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +26,6 @@ import java.util.*;
 public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private final ValuteMapper mapper = ValuteMapper.MAPPER;
-    private final ExchangeRateMapper rateMapper = ExchangeRateMapper.MAPPER;
 
     private ExchangeRateRepository exchangeRateRepository;
     private ValuteRepository valuteRepository;
@@ -98,8 +94,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     private void saveToExchangeRate(URL url, LocalDate date) throws IOException {
         XmlMapper xmlMapper = new XmlMapper();
 
-        ExchangeRateDto rateDto = xmlMapper.readValue(url, ExchangeRateDto.class);
-        ExchangeRate rate = rateMapper.toExchangeRate(rateDto);
+        ExchangeRate rate = xmlMapper.readValue(url, ExchangeRate.class);
         rate.setDate(date);
         exchangeRateRepository.save(rate);
     }

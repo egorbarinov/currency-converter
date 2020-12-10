@@ -17,37 +17,16 @@ import static com.currencyconverter.common.CurrencyConverterUtil.getFormattedAmo
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@JacksonXmlRootElement(localName = "Valute")
 public class ValuteDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JacksonXmlProperty(namespace = "pk")
     private Long pk;
-
-    @JacksonXmlProperty(localName = "ID", isAttribute = true)
     private String id;
-
-    @JacksonXmlProperty(localName = "NumCode")
     private String numCode;
-
-    @JacksonXmlProperty(localName = "CharCode")
     private String charCode;
-
-    @JacksonXmlProperty(localName = "Nominal")
     private BigDecimal nominal;
-
-    @JacksonXmlProperty(localName = "Name")
     private String name;
-
-    @JacksonXmlProperty(localName = "Value")
     private BigDecimal value;
-
-    @NotBlank
     private String currencyFrom;
-
-    @NotBlank
     private String currencyTo;
 
     @NotNull

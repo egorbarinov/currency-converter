@@ -37,9 +37,13 @@ public class Valute {
     @JacksonXmlProperty(localName = "Name")
     private String name;
 
-//    @JacksonXmlProperty(localName = "Value")
-    @JsonProperty("Value")
+    @JacksonXmlProperty(localName = "Value")
+//    @JsonProperty("Value")
     private BigDecimal value;
+
+    public void setValue(String value) {
+        this.value = new BigDecimal(value.replaceAll(",", "\\."));
+    }
 
 }
 
