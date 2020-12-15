@@ -97,6 +97,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
         ExchangeRate rate = xmlMapper.readValue(url, ExchangeRate.class);
         rate.setDate(date);
         exchangeRateRepository.save(rate);
+        logger.info("All records rates for today is saved! ");
     }
 
     @Override

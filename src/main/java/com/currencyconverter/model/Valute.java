@@ -38,7 +38,6 @@ public class Valute {
     private String name;
 
     @JacksonXmlProperty(localName = "Value")
-//    @JsonProperty("Value")
     private BigDecimal value;
 
     public void setValue(String value) {
