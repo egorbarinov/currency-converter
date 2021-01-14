@@ -12,7 +12,8 @@ import java.util.List;
 
 public interface ExchangeRateService {
 
-    void processingHttpRequest() throws IOException;
+    void loadCbrfRates() throws IOException;
+
     void processingUploadData(LocalDate localDate) throws IOException;
     ExchangeRate findExchangeRateByDate(LocalDate date);
     List<ValuteDto> getAll();

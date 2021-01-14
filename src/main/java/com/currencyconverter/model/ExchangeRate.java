@@ -38,7 +38,7 @@ public class ExchangeRate {
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "Valute" )
-    @ManyToMany(targetEntity = Valute.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Valute.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @CollectionTable(schema = "jxmlparse_valcurs",
             name = "rate_valute_mapping",
             joinColumns = {@JoinColumn(name = "course_date",

@@ -38,6 +38,14 @@ public class RegistrationController {
     public String processRegistrationForm(@Valid @ModelAttribute("userForm") UserDto userForm,
                                           BindingResult bindingResult, Model model) {
         model.addAttribute("userForm", userForm);
+//        ValidationResult result = validator.validate(userForm);
+//        if (!result.isValidUserForm) {
+//            // а UserForm валидатор поправит сам
+//            model.addAllAttributes(result.getVaidationAttributes());
+//            return "register";
+//        }
+
+
         if (userForm.getUsername() == null || userForm.getPassword() == null || userForm.getPasswordConfirm() == null || userForm.getEmail() == null) {
             model.addAttribute("errorForm", "Все поля должны быть заполнены");
             return "register";

@@ -1,13 +1,9 @@
 package com.currencyconverter.dto;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -43,11 +39,6 @@ public class ValuteDto {
     public void setValue(String value) {
         this.value = new BigDecimal(value.replaceAll(",", "\\."));
     }
-
-//    @Override
-//    public String toString() {
-//        return String.format("%s,%s", currencyFrom, currencyTo);
-//    }
 
 
     @Override

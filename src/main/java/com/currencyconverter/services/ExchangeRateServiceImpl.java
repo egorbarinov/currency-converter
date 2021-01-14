@@ -25,17 +25,16 @@ import java.util.*;
 @EnableScheduling
 public class ExchangeRateServiceImpl implements ExchangeRateService{
 
-    private final ValuteMapper mapper = ValuteMapper.MAPPER;
-
-    private ExchangeRateRepository exchangeRateRepository;
-    private ValuteRepository valuteRepository;
-
-    private final static Logger logger = LoggerFactory.getLogger(ExchangeRate.class);
+    private  ValuteMapper mapper;
 
     @Autowired
-    public void setValuteRepository(ValuteRepository valuteRepository) {
-        this.valuteRepository = valuteRepository;
+    public void setMapper(ValuteMapper mapper) {
+        this.mapper = mapper;
     }
+
+    private ExchangeRateRepository exchangeRateRepository;
+
+    private final static Logger logger = LoggerFactory.getLogger(ExchangeRate.class);
 
     @Autowired
     public void setExchangeRateRepository(ExchangeRateRepository exchangeRateRepository) {
@@ -77,7 +76,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
      */
     @Override
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
-    public void processingHttpRequest() throws IOException {
+    public void loadCbrfRates() throws IOException {
         if (exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
             DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             URL url = new URL("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + LocalDate.now().format(formatters));
@@ -93,9 +92,12 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private void saveToExchangeRate(URL url, LocalDate date) throws IOException {
         XmlMapper xmlMapper = new XmlMapper();
-
         ExchangeRate rate = xmlMapper.readValue(url, ExchangeRate.class);
         rate.setDate(date);
+
+//        ModelExchangeRate modelRate = xmlMapper.readValue(url, ExchangeRate.class);
+//        converter.convert(modelRate);
+//        rate.setDate(date);
         exchangeRateRepository.save(rate);
         logger.info("All records rates for today is saved! ");
     }

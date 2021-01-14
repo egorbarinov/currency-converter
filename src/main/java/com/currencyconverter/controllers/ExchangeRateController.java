@@ -32,7 +32,7 @@ public class ExchangeRateController {
         this.userService = userService;
 //        exchangeRateService.processingUploadData(LocalDate.of(1993, 1,6));
         exchangeRateService.processingUploadData(LocalDate.of(2020, 11,15));
-        exchangeRateService.processingHttpRequest();
+        exchangeRateService.loadCbrfRates();
     }
 
     @InitBinder   // для web обработки сообщений. WebDataBinder блокирует нулевые формы

@@ -9,9 +9,10 @@ import org.mapstruct.factory.Mappers;
 import java.util.Collection;
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ValuteMapper {
-    ValuteMapper MAPPER = Mappers.getMapper(ValuteMapper.class);
+
+//    ValuteMapper MAPPER = Mappers.getMapper(ValuteMapper.class);
 
     Valute toValute(ValuteDto dto);
 
