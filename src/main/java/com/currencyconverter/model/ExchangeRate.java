@@ -43,6 +43,11 @@ public class ExchangeRate {
             name = "rate_valute_mapping",
             joinColumns = {@JoinColumn(name = "course_date",
                     referencedColumnName = "date")})
+//    @JoinTable(schema = "jxmlparse_valcurs",
+//            name = "rate_valute_mapping",
+//    joinColumns = {@JoinColumn(name = "course_date",
+//                    referencedColumnName = "date")},
+//    inverseJoinColumns = @JoinColumn(name = "valute_pk"))
     private List<Valute> valutes;
 
     @Override

@@ -19,7 +19,9 @@ public class Valute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JacksonXmlProperty(namespace = "pk")
+    @JacksonXmlProperty(namespace = "valute_pk")
+//    @JoinTable(name = "rate_valute_mapping",
+//    joinColumns = @JoinColumn(name = ""))
     private Long pk;
 
     @JacksonXmlProperty(localName = "ID", isAttribute = true)
