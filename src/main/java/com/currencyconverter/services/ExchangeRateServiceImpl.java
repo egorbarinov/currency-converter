@@ -1,10 +1,9 @@
 package com.currencyconverter.services;
 
-import com.currencyconverter.dao.ValuteRepository;
+import com.currencyconverter.dao.ExchangeRateRepository;
 import com.currencyconverter.dto.ValuteDto;
 import com.currencyconverter.model.ExchangeRate;
 import com.currencyconverter.mapper.ValuteMapper;
-import com.currencyconverter.dao.ExchangeRateRepository;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +33,13 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private ExchangeRateRepository exchangeRateRepository;
 
+
+
     private final static Logger logger = LoggerFactory.getLogger(ExchangeRate.class);
 
     @Autowired
-    public void setExchangeRateRepository(ExchangeRateRepository exchangeRateRepository) {
-        this.exchangeRateRepository = exchangeRateRepository;
+    public void setExchangeRateRepository(ExchangeRateRepository exchangeRateRateRepository) {
+        this.exchangeRateRepository = exchangeRateRateRepository;
 
     }
 
@@ -54,7 +55,8 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 //            }
 //        });
 //        lists.sort((v1, v2) -> v1.getCharCode().compareTo(v2.getCharCode()));
-        lists.sort(Comparator.comparing(ValuteDto::getName));
+
+//        lists.sort(Comparator.comparing(ValuteDto::getName));
         return lists;
     }
 
