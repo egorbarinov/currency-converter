@@ -10,7 +10,7 @@ spring:
     static-path-pattern: /statico/**
 
   jpa:
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         ddl-auto: validate

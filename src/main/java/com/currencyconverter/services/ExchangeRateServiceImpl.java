@@ -48,15 +48,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     public List<ValuteDto> getAll() {
         LocalDate date =LocalDate.now();
         List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepository.findExchangeRateByDate(date).getValutes());
-//        lists.sort(new Comparator<ValuteDto>() {
-//            @Override
-//            public int compare(ValuteDto o1, ValuteDto o2) {
-//                return o1.getName().compareTo(o2.getName());
-//            }
-//        });
-//        lists.sort((v1, v2) -> v1.getCharCode().compareTo(v2.getCharCode()));
 
-//        lists.sort(Comparator.comparing(ValuteDto::getName));
         return lists;
     }
 
