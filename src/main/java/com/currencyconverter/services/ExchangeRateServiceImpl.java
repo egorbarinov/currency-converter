@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 @Service
@@ -26,7 +27,7 @@ import java.util.concurrent.locks.Lock;
 public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private  ValuteMapper mapper;
-    private Lock lock;
+    private Lock lock = new ReentrantLock();
 
     @Autowired
     public void setMapper(ValuteMapper mapper) {
