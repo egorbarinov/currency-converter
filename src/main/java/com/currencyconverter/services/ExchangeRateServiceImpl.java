@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
 
 
 @Service
@@ -25,6 +26,7 @@ import java.util.*;
 public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private  ValuteMapper mapper;
+    private Lock lock;
 
     @Autowired
     public void setMapper(ValuteMapper mapper) {
@@ -72,6 +74,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
     public void loadCbrfRates() throws IOException {
         if (exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
+            lock.lock();
             DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             URL url = new URL("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + LocalDate.now().format(formatters));
 
@@ -81,6 +84,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
             if (status == HttpURLConnection.HTTP_OK) {
                 saveToExchangeRate(url, LocalDate.now());
             }
+            lock.unlock();
         }
     }
 
@@ -99,6 +103,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     public void processingUploadData(LocalDate date) throws IOException {
         if (exchangeRateRepository.findExchangeRateByDate(date) == null) {
+            lock.lock();
             logger.info("Ready records rates: " + LocalDateTime.now() + ".");
 
             while (date.compareTo(LocalDate.now()) <= 0) {
@@ -116,6 +121,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
                 date = date.plusDays(1);
             }
             logger.info("All records rates for today is saved! " + LocalDateTime.now() + ".");
+            lock.unlock();
         }
 
     }
