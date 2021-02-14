@@ -23,6 +23,7 @@ import java.util.List;
 @Table(schema="jxmlparse_valcurs", name = "course")
 @JacksonXmlRootElement(localName = "ValCurs")
 @JsonIgnoreProperties(value = {"name"})
+@NamedQuery(name = "withValutes", query = "SELECT e FROM ExchangeRate e JOIN FETCH e.valutes WHERE e.date = :date") // for LAZY upload
 public class ExchangeRate {
 
     @Id
@@ -38,7 +39,7 @@ public class ExchangeRate {
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "Valute" )
-    @OneToMany(targetEntity = Valute.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Valute.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @CollectionTable(schema = "jxmlparse_valcurs",
             name = "rate_valute_mapping",
             joinColumns = {@JoinColumn(name = "course_date",
