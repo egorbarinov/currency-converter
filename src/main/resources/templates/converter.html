@@ -68,7 +68,7 @@
                         </div>
                         <div class="form-row">
                             <div class="col form-group">
-                                <p> <input type="number" th:field="${selectedCurrencies.amountToConvert}" th:placeholder="0"/></p>
+                                <p> <input type="number" th:field="${selectedCurrencies.amountToConvert}" th:placeholder="0" required/></p>
                                 <p> <errors path="amountToConverted" th:utext="${amountError}"></errors></p>
                                 </div>
                             <div class="col form-group">

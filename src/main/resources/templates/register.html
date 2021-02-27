@@ -21,7 +21,7 @@
         <img src="/statico/img/currency.jpg/">
     </div>
 
-    <div th:replace="~{navigation :: navigation(Home)}" />
+    <div th:replace="~{navigation :: navigation(Home)}"></div>
     <div class="row justify-content-left">
         <div class="col-md-6 text-left">
             <div class="card">
@@ -68,22 +68,24 @@
                             <div style="margin-bottom: 25px" class="input-group">
                                 <div class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <p> <input type="text" th:field="${userForm.username}" th:placeholder="Username" class="form-control"/></p>
+                                <p> <input type="text" th:field="${userForm.username}" th:placeholder="Username" class="form-control" required/></p>
                             </div>
 
                             <div style="margin-bottom: 25px" class="input-group">
 
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <p> <input type="password" th:field="${userForm.password}" th:placeholder="Password" class="form-control"/></p>
+                                <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                                <p> <input type="password" th:field="${userForm.password}" th:placeholder="Password" class="form-control" required/></p>
                             </div>
                             <div style="margin-bottom: 25px" class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <p> <input type="password" th:field="${userForm.passwordConfirm}" th:placeholder="Confirm_password" class="form-control"/></p>
+                                <p> <input type="password" th:field="${userForm.passwordConfirm}" th:placeholder="Confirm_password" class="form-control" required/></p>
                             </div>
                             <div style="margin-bottom: 25px" class="input-group">
 
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <p> <input type="email" th:field="${userForm.email}" th:placeholder="Email" class="form-control"/></p>
+                                <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                                <p> <input type="email" th:field="${userForm.email}" th:placeholder="Email" class="form-control" required/></p>
                             </div>
                         </div>
                         <div class="form-row text-center">

@@ -34,7 +34,7 @@ public class ExchangeRateController {
         this.delegatorService = delegatorService;
         this.userService = userService;
 //        exchangeRateService.processingUploadData(LocalDate.of(1993, 1,6));
-        exchangeRateService.processingUploadData(LocalDate.of(2021, 1, 1));
+        exchangeRateService.processingUploadData(LocalDate.of(2021, 2, 1));
         exchangeRateService.loadCbrfRates();
     }
 

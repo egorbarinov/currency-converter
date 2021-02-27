@@ -24,17 +24,17 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @NotBlank
-    @Size(min = 4, max = 12)
-    @Pattern(regexp = "^[A-Za-z0-9]*$")
+//    @NotBlank
+//    @Size(min = 4, max = 12)
+//    @Pattern(regexp = "^[A-Za-z0-9]*$")
     @Column(name = "username")
     private String username;
 
     @Column(name = "password")
     private String password;
 
-    @Email
-    @NotBlank
+//    @Email
+//    @NotBlank
     @Column(name = "email")
     private String email;
 
