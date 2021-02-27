@@ -27,7 +27,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private  ValuteMapper mapper;
-    private Lock lock = new ReentrantLock();
 
     @Autowired
     public void setMapper(ValuteMapper mapper) {

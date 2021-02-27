@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "mail.server.host",
+      "type": "java.lang.String",
+      "description": "Description for mail.server.host."
+    },
+    {
+      "name": "mail.server.port",
+      "type": "java.lang.String",
+      "description": "Description for mail.server.port."
+    },
+    {
+      "name": "mail.server.username",
+      "type": "java.lang.String",
+      "description": "Description for mail.server.username."
+    },
+    {
+      "name": "mail.server.password",
+      "type": "java.lang.String",
+      "description": "Description for mail.server.password."
+    }
+  ] }

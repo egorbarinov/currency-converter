@@ -16,7 +16,10 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 @Controller
 public class ExchangeRateController {
@@ -31,7 +34,7 @@ public class ExchangeRateController {
         this.delegatorService = delegatorService;
         this.userService = userService;
 //        exchangeRateService.processingUploadData(LocalDate.of(1993, 1,6));
-        exchangeRateService.processingUploadData(LocalDate.of(2020, 11,15));
+        exchangeRateService.processingUploadData(LocalDate.of(2021, 1, 1));
         exchangeRateService.loadCbrfRates();
     }
 

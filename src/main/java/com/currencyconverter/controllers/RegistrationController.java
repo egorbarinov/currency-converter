@@ -8,6 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.groups.Default;
 
 import javax.validation.Valid;
 
@@ -44,7 +48,6 @@ public class RegistrationController {
 //            model.addAllAttributes(result.getVaidationAttributes());
 //            return "register";
 //        }
-
 
         if (userForm.getUsername() == null || userForm.getPassword() == null || userForm.getPasswordConfirm() == null || userForm.getEmail() == null) {
             model.addAttribute("errorForm", "Все поля должны быть заполнены");
