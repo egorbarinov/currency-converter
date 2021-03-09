@@ -1,6 +1,6 @@
 package com.currencyconverter.services;
 
-import com.currencyconverter.dto.ValuteDto;
+import com.currencyconverter.dto.CurrencyDto;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,18 +22,18 @@ public class DelegatorService {
     /**
      * метод для выполнения конвертации данных, присваивающий dto значения конвертации и даты
      */
-    public void performCurrencyConversion(ValuteDto valuteDto, LocalDate date) {
+    public void performCurrencyConversion(CurrencyDto currencyDto, LocalDate date) {
         List<BigDecimal> valuesToDecimal = new ArrayList<>();
 
-        addValuesToCurrency(date, valuesToDecimal, valuteDto.getCurrencyFrom());
-        addValuesToCurrency(date, valuesToDecimal, valuteDto.getCurrencyTo());
+        addValuesToCurrency(date, valuesToDecimal, currencyDto.getCurrencyFrom());
+        addValuesToCurrency(date, valuesToDecimal, currencyDto.getCurrencyTo());
 
         BigDecimal resultAmount = (valuesToDecimal.get(0))
-                .divide(valuesToDecimal.get(1), 10, RoundingMode.HALF_UP)
-                .multiply(valuteDto.getAmountToConvert());
+                .divide(valuesToDecimal.get(1), 10, RoundingMode.CEILING)
+                .multiply(currencyDto.getAmountToConvert());
 
-        valuteDto.setConvertedAmount(resultAmount);
-        valuteDto.setConversionDate(new Date());
+        currencyDto.setConvertedAmount(resultAmount);
+        currencyDto.setConversionDate(new Date());
 
     }
 
@@ -42,7 +42,7 @@ public class DelegatorService {
         if (currencyValue.equals("RUB")) {
             valuesToDecimal.add(BigDecimal.valueOf(1));
         } else {
-            ValuteDto dto = exchangeRateService.getAll(date).stream().filter(v -> v.getCharCode().equals(currencyValue)).findFirst().orElseThrow();
+            CurrencyDto dto = exchangeRateService.getAll(date).stream().filter(v -> v.getCharCode().equals(currencyValue)).findFirst().orElseThrow();
             BigDecimal result = dto.getValue().divide(dto.getNominal());
             valuesToDecimal.add(result);
         }
@@ -51,8 +51,8 @@ public class DelegatorService {
     /**
      * Метод добавляет выполненный запрос в историю запросов пользователя
      */
-    public void performAudit(ValuteDto valuteDto, Principal principal) {
-        String auditString = valuteDto.getAuditString();
+    public void performAudit(CurrencyDto currencyDto, Principal principal) {
+        String auditString = currencyDto.getAuditString();
         userService.addAuditEntry(principal.getName(), auditString);
 
     }

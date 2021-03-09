@@ -1,6 +1,6 @@
 package com.currencyconverter.controllers;
 
-import com.currencyconverter.dto.ValuteDto;
+import com.currencyconverter.dto.CurrencyDto;
 import com.currencyconverter.services.DelegatorService;
 import com.currencyconverter.services.ExchangeRateService;
 import com.currencyconverter.services.UserServiceImpl;
@@ -16,10 +16,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 
 @Controller
 public class ExchangeRateController {
@@ -77,28 +74,28 @@ public class ExchangeRateController {
     }
 
     @GetMapping("/converter")
-    public String amountForm(ValuteDto valuteDto, Model model, Principal principal) {
+    public String amountForm(CurrencyDto currencyDto, Model model, Principal principal) {
         model.addAttribute("name", principal.getName());
         if (!userService.findByUsername(principal.getName()).isEnabled()) {
             return "disabled";
         }
         model.addAttribute("currencies", exchangeRateService.getAll());
-        model.addAttribute("selectedCurrencies", valuteDto);
+        model.addAttribute("selectedCurrencies", currencyDto);
         return "converter";
     }
 
     @PostMapping("/converter")
-    public String amountSubmit(@Valid ValuteDto valuteDto, Model model, Principal principal) {
+    public String amountSubmit(@Valid CurrencyDto currencyDto, Model model, Principal principal) {
         model.addAttribute("currencies", exchangeRateService.getAll());
-        model.addAttribute("selectedCurrencies", valuteDto);
+        model.addAttribute("selectedCurrencies", currencyDto);
 
 
-        if (valuteDto.getAmountToConvert() == null) {
+        if (currencyDto.getAmountToConvert() == null) {
             model.addAttribute("amountError", "Поле не может быть пустым. Введите значение!");
             return "converter";
         }
-        delegatorService.performCurrencyConversion(valuteDto, date);
-        delegatorService.performAudit(valuteDto, principal);
+        delegatorService.performCurrencyConversion(currencyDto, date);
+        delegatorService.performAudit(currencyDto, principal);
 
         return "converter";
     }

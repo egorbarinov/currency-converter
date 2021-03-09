@@ -14,6 +14,8 @@ import javax.validation.Validator;
 import javax.validation.groups.Default;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/register")
@@ -42,17 +44,6 @@ public class RegistrationController {
     public String processRegistrationForm(@Valid @ModelAttribute("userForm") UserDto userForm,
                                           BindingResult bindingResult, Model model) {
         model.addAttribute("userForm", userForm);
-//        ValidationResult result = validator.validate(userForm);
-//        if (!result.isValidUserForm) {
-//            // а UserForm валидатор поправит сам
-//            model.addAllAttributes(result.getVaidationAttributes());
-//            return "register";
-//        }
-
-        if (userForm.getUsername() == null || userForm.getPassword() == null || userForm.getPasswordConfirm() == null || userForm.getEmail() == null) {
-            model.addAttribute("errorForm", "Все поля должны быть заполнены");
-            return "register";
-        }
 
         //проверка содержимого полей формы пользователя
         if (bindingResult.hasErrors()) {
@@ -73,14 +64,6 @@ public class RegistrationController {
             model.addAttribute("mailError", "Пользователь с таким email уже существует");
             return "register";
         }
-
-        if (!userForm.getPassword().equals(userForm.getPasswordConfirm())) {
-            userForm.setPassword(null);
-            userForm.setPasswordConfirm(null);
-            model.addAttribute("passwordError", "Пароли не совпадают!");
-            return "register";
-        }
-
         userService.saveUser(userForm);
         return "solution";
     }
@@ -91,6 +74,7 @@ public class RegistrationController {
         model.addAttribute("activated", activated);
         return "activate-user";
     }
+
 
 }
 

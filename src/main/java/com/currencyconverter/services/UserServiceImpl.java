@@ -14,9 +14,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 import javax.transaction.Transactional;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,8 +25,8 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private UserRepository userRepository;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
 	private final MailSenderService mailSenderService;
 
 	public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository, MailSenderService mailSenderService) {
@@ -123,8 +124,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public User getAuditHistoryForUser(String username) {
-		User queryHistory = userRepository.findByUsername(username);
-		return queryHistory;
+		return userRepository.findByUsername(username);
 	}
 
 	@Override
@@ -178,5 +178,32 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		return true;
 	}
+
+//	public Map<String, String> validate(UserDto userForm) {
+//		Map<String, String> messages = new HashMap<>();
+//		if (userForm.getUsername() == null || userForm.getPassword() == null || userForm.getPasswordConfirm() == null || userForm.getEmail() == null) {
+//			messages.put("errorForm", "Все поля должны быть заполнены");
+//		}
+//
+//		boolean existing = existByName(userForm.getUsername());
+//		if (existing) {
+//			userForm.setUsername(null);
+//			messages.put("registrationError", "Пользователь с таким логином уже существует");
+//		}
+//
+//		existing = existByEmail(userForm.getEmail());
+//		if (existing) {
+//			userForm.setEmail(null);
+//			messages.put("mailError", "Пользователь с таким email уже существует");
+//		}
+//
+//		if (!userForm.getPassword().equals(userForm.getPasswordConfirm())) {
+//			userForm.setPassword(null);
+//			userForm.setPasswordConfirm(null);
+//			messages.put("passwordError", "Пароли не совпадают!");
+//		}
+//		return messages;
+//	}
+
 
 }

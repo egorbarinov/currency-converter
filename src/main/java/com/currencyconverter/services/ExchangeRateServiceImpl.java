@@ -1,9 +1,9 @@
 package com.currencyconverter.services;
 
 import com.currencyconverter.dao.ExchangeRateRepository;
-import com.currencyconverter.dto.ValuteDto;
+import com.currencyconverter.dto.CurrencyDto;
+import com.currencyconverter.mapper.CurrencyMapper;
 import com.currencyconverter.model.ExchangeRate;
-import com.currencyconverter.mapper.ValuteMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,18 +18,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 @Service
 @EnableScheduling
 public class ExchangeRateServiceImpl implements ExchangeRateService{
 
-    private  ValuteMapper mapper;
+    private CurrencyMapper mapper;
 
     @Autowired
-    public void setMapper(ValuteMapper mapper) {
+    public void setMapper(CurrencyMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -47,17 +45,17 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     // перевёл сущность в DTO
     @Override
-    public List<ValuteDto> getAll() {
+    public List<CurrencyDto> getAll() {
         LocalDate date =LocalDate.now();
-        List<ValuteDto> lists = mapper.fromValuteList(exchangeRateRepository.findExchangeRateByDate(date).getValutes());
+        List<CurrencyDto> lists = mapper.fromCurrencyList(exchangeRateRepository.findExchangeRateByDate(date).getCurrencies());
 
         return lists;
     }
 
     @Override
-    public List<ValuteDto> getAll(LocalDate date) {
-        List<ValuteDto> lists = mapper.fromValuteList(findExchangeRateByDate(date).getValutes());
-        lists.sort(Comparator.comparing(ValuteDto::getName));
+    public List<CurrencyDto> getAll(LocalDate date) {
+        List<CurrencyDto> lists = mapper.fromCurrencyList(findExchangeRateByDate(date).getCurrencies());
+        lists.sort(Comparator.comparing(CurrencyDto::getName));
         return lists;
     }
 

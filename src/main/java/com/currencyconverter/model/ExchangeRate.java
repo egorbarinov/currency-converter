@@ -23,7 +23,7 @@ import java.util.List;
 @Table(schema="jxmlparse_valcurs", name = "course")
 @JacksonXmlRootElement(localName = "ValCurs")
 @JsonIgnoreProperties(value = {"name"})
-@NamedQuery(name = "withValutes", query = "SELECT e FROM ExchangeRate e JOIN FETCH e.valutes WHERE e.date = :date") // for LAZY upload
+@NamedQuery(name = "withValutes", query = "SELECT e FROM ExchangeRate e JOIN FETCH e.currencies WHERE e.date = :date") // for LAZY upload
 public class ExchangeRate {
 
     @Id
@@ -39,7 +39,7 @@ public class ExchangeRate {
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "Valute" )
-    @OneToMany(targetEntity = Valute.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(targetEntity = Currency.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @CollectionTable(schema = "jxmlparse_valcurs",
             name = "rate_valute_mapping",
             joinColumns = {@JoinColumn(name = "course_date",
@@ -49,13 +49,13 @@ public class ExchangeRate {
 //    joinColumns = {@JoinColumn(name = "course_date",
 //                    referencedColumnName = "date")},
 //    inverseJoinColumns = @JoinColumn(name = "valute_pk"))
-    private List<Valute> valutes;
+    private List<Currency> currencies;
 
     @Override
     public String toString() {
         return "ExchangeRate{" +
                 "date=" + date +
-                ", valute=" + valutes +
+                ", valute=" + currencies +
                 '}';
     }
 }

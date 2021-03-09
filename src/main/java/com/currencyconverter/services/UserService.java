@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 public interface UserService extends UserDetailsService {
 
@@ -23,5 +24,6 @@ public interface UserService extends UserDetailsService {
     void saveUser(UserDto userDto);
     boolean activateUser(String activateCode);
 
+//    Map<String, String> validate(UserDto userForm);
 
 }

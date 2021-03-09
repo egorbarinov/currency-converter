@@ -24,17 +24,12 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-//    @NotBlank
-//    @Size(min = 4, max = 12)
-//    @Pattern(regexp = "^[A-Za-z0-9]*$")
     @Column(name = "username")
     private String username;
 
     @Column(name = "password")
     private String password;
 
-//    @Email
-//    @NotBlank
     @Column(name = "email")
     private String email;
 
@@ -64,10 +59,8 @@ public class User {
 
     public String getFormattedString() {
         StringBuilder formatted = new StringBuilder();
-        getAuditEntries().stream()
-                .forEach((p) -> formatted.append(p.getQueryString())
-                        .append("<br />"));
+        getAuditEntries().forEach((p) -> formatted.append(p.getQueryString())
+                .append("<br />"));
         return formatted.toString();
-
     }
 }
