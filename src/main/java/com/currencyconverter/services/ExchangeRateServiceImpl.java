@@ -35,7 +35,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
 
 
-    private final static Logger logger = LoggerFactory.getLogger(ExchangeRate.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExchangeRateServiceImpl.class);
 
     @Autowired
     public void setExchangeRateRepository(ExchangeRateRepository exchangeRateRateRepository) {
@@ -47,9 +47,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     public List<CurrencyDto> getAll() {
         LocalDate date =LocalDate.now();
-        List<CurrencyDto> lists = mapper.fromCurrencyList(exchangeRateRepository.findExchangeRateByDate(date).getCurrencies());
-
-        return lists;
+        return mapper.fromCurrencyList(exchangeRateRepository.findExchangeRateByDate(date).getCurrencies());
     }
 
     @Override
@@ -99,7 +97,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     public void processingUploadData(LocalDate date) throws IOException {
         if (exchangeRateRepository.findExchangeRateByDate(date) == null) {
-            logger.info("Ready records rates: " + LocalDateTime.now() + ".");
+            logger.info("Ready records rates {} :", LocalDateTime.now());
 
             while (date.compareTo(LocalDate.now()) <= 0) {
                 DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -111,11 +109,11 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
                 if (status == HttpURLConnection.HTTP_OK) {
                     saveToExchangeRate(url, date);
                 } else if (status == HttpURLConnection.HTTP_NOT_FOUND) {
-                    System.out.println("HTTP NOT FOUND");
+                    logger.info("HTTP NOT FOUND");
                 }
                 date = date.plusDays(1);
             }
-            logger.info("All records rates for today is saved! " + LocalDateTime.now() + ".");
+            logger.info("All records rates for today is saved {} ! ", LocalDateTime.now());
         }
     }
 

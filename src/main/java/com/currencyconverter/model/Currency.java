@@ -1,8 +1,6 @@
 package com.currencyconverter.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,7 +41,7 @@ public class Currency {
     private BigDecimal value;
 
     public void setValue(String value) {
-        this.value = new BigDecimal(value.replaceAll(",", "\\."));
+        this.value = new BigDecimal(value.replace(",", "\\."));
     }
 
 }

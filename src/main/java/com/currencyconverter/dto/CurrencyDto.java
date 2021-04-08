@@ -3,12 +3,12 @@ package com.currencyconverter.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Date;
-
-import static com.currencyconverter.common.CurrencyConverterUtil.getFormattedAmount;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -32,14 +32,11 @@ public class CurrencyDto {
 
     private BigDecimal convertedAmount;
 
-    @Past
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date conversionDate;
 
     public void setValue(String value) {
-        this.value = new BigDecimal(value.replaceAll(",", "\\."));
+        this.value = new BigDecimal(value.replace(",", "\\.")); // value.replaceAll
     }
-
 
     @Override
     public String toString() {
@@ -75,9 +72,16 @@ public class CurrencyDto {
         return auditString.toString();
     }
 
-    public boolean isSelected(String ValuteDtoCharCode){
-        if (ValuteDtoCharCode != null) {
-            return ValuteDtoCharCode.equals(charCode);
+    private String getFormattedAmount(BigDecimal amountToFormat) {
+        return Optional.ofNullable(amountToFormat).map(p -> {
+            p = p.setScale(4, RoundingMode.CEILING);
+            return String.format("%1$17s", new DecimalFormat("0.0000").format(p));
+        }).orElse(null);
+    }
+
+    public boolean isSelected(String valuteDtoCharCode){
+        if (valuteDtoCharCode != null) {
+            return valuteDtoCharCode.equals(charCode);
         }
         return false;
     }

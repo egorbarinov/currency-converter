@@ -8,14 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.groups.Default;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/register")
@@ -36,7 +30,6 @@ public class RegistrationController {
     @GetMapping
     public String registration(Model model) {
         model.addAttribute("userForm", new UserDto());
-
         return "register";
     }
 

@@ -30,8 +30,7 @@ public class ExchangeRateController {
         this.exchangeRateService = exchangeRateService;
         this.delegatorService = delegatorService;
         this.userService = userService;
-//        exchangeRateService.processingUploadData(LocalDate.of(1993, 1,6));
-        exchangeRateService.processingUploadData(LocalDate.of(2021, 2, 1));
+        exchangeRateService.processingUploadData(LocalDate.of(2021, 2, 1)); // LocalDate.of(1993, 1,6)
         exchangeRateService.loadCbrfRates();
     }
 
@@ -47,12 +46,12 @@ public class ExchangeRateController {
     }
 
     @GetMapping({"/","/index"})
-    public String index(Model model, @RequestParam(required = false, name = "date_req") String date_req) {
+    public String index(Model model, @RequestParam(required = false, name = "dateReq") String dateReq) {
 
         model.addAttribute("standardDate", LocalDateTime.now());
-        if (date_req == null) {
-            date_req = LocalDate.now().toString();
-            model.addAttribute("requestDate", date_req);
+        if (dateReq == null) {
+            dateReq = LocalDate.now().toString();
+            model.addAttribute("requestDate", dateReq);
             model.addAttribute("date", date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
             try {
                 model.addAttribute("currencies", exchangeRateService.getAll(date));
@@ -61,9 +60,9 @@ public class ExchangeRateController {
             }
         }
         else {
-            LocalDate localDate = LocalDate.parse(date_req);
+            LocalDate localDate = LocalDate.parse(dateReq);
             model.addAttribute("date", localDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
-            model.addAttribute("requestDate", date_req);
+            model.addAttribute("requestDate", dateReq);
             try {
                 model.addAttribute("currencies", exchangeRateService.getAll(localDate));
             } catch (RuntimeException ex) {
@@ -88,7 +87,6 @@ public class ExchangeRateController {
     public String amountSubmit(@Valid CurrencyDto currencyDto, Model model, Principal principal) {
         model.addAttribute("currencies", exchangeRateService.getAll());
         model.addAttribute("selectedCurrencies", currencyDto);
-
 
         if (currencyDto.getAmountToConvert() == null) {
             model.addAttribute("amountError", "Поле не может быть пустым. Введите значение!");
