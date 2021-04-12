@@ -41,7 +41,7 @@ public class Currency {
     private BigDecimal value;
 
     public void setValue(String value) {
-        this.value = new BigDecimal(value.replace(",", "\\."));
+        this.value = new BigDecimal(value.replace(",", "."));
     }
 
 }
