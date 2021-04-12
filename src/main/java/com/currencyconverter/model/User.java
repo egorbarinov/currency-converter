@@ -6,12 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.util.Date;
 import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -59,7 +55,7 @@ public class User {
 
     public String getFormattedString() {
         StringBuilder formatted = new StringBuilder();
-        getAuditEntries().forEach((p) -> formatted.append(p.getQueryString())
+        getAuditEntries().forEach(p -> formatted.append(p.getQueryString())
                 .append("<br />"));
         return formatted.toString();
     }

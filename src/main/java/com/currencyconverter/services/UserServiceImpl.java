@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -79,7 +78,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		User queryHistoryForUser = userRepository.findByUsername(username);
 		addNewAuditEntry(queryHistoryForUser, queryString);
 		saveQueryHistory(queryHistoryForUser);
-
 		return queryHistoryForUser;
 	}
 
@@ -95,18 +93,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public User getAuditHistoryForUser(String username) {
-		return userRepository.findByUsername(username);
-	}
-
-	@Override
-	public User createNewQueryHistoryForUser(Principal principal) {
-		return new User(principal.getName());
-	}
-
-	@Override
 	public User saveQueryHistory(User queryHistoryForUser) {
 		return userRepository.save(queryHistoryForUser);
+	}
+
+	@Override
+	public User getAuditHistoryForUser(String username) {
+		return userRepository.findByUsername(username);
 	}
 
 	@Override

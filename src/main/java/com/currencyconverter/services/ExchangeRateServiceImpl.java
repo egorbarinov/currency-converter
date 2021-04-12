@@ -33,8 +33,6 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private ExchangeRateRepository exchangeRateRepository;
 
-
-
     private static final Logger logger = LoggerFactory.getLogger(ExchangeRateServiceImpl.class);
 
     @Autowired
@@ -43,7 +41,6 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     }
 
-    // перевёл сущность в DTO
     @Override
     public List<CurrencyDto> getAll() {
         LocalDate date =LocalDate.now();
