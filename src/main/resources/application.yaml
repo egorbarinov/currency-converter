@@ -1,32 +1,61 @@
+#server:
+#  hostname: localhost
+#  port: ${PORT:8189}
+#
+#  servlet:
+#    context-path: /
+#
+#spring:
+#  mvc:
+#    static-path-pattern: /statico/**
+#
+#  jpa:
+#    show-sql: false
+#    properties:
+#      hibernate:
+#        ddl-auto: validate
+#        naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+#        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+#        temp:
+#          use_jdbc_metadata_defaults: false
+#        id:
+#          new_generator_mappings: false
+#
+#
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/postgres}
+#    username: ${JDBC_DATABASE_USERNAME:postgres}
+#    password: ${JDBC_DATABASE_PASSWORD:password}
+
 server:
   hostname: localhost
   port: ${PORT:8189}
-
   servlet:
     context-path: /
-
 spring:
   mvc:
     static-path-pattern: /statico/**
-
   jpa:
+    hibernate:
+      ddl-auto: validate
+      dialect: org.hibernate.dialect.PostgreSQL95Dialect
     show-sql: false
     properties:
       hibernate:
-        ddl-auto: validate
-        naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-        dialect: org.hibernate.dialect.PostgreSQL95Dialect
-        temp:
-          use_jdbc_metadata_defaults: false
-        id:
-          new_generator_mappings: false
-
+        format_sql: true
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/postgres}
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/postgres?currentSchema=jxmlparse_valcurs}
     username: ${JDBC_DATABASE_USERNAME:postgres}
     password: ${JDBC_DATABASE_PASSWORD:password}
+    flyway:
+      baseline-on-migrate: true
+#  jackson:
+#    serialization:
+#      indent_output: true
+
 
 
 mail:

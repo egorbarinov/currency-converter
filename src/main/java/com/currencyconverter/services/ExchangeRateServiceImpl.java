@@ -2,7 +2,9 @@ package com.currencyconverter.services;
 
 import com.currencyconverter.dao.ExchangeRateRepository;
 import com.currencyconverter.dto.CurrencyDto;
+import com.currencyconverter.dto.ExchangeRateDto;
 import com.currencyconverter.mapper.CurrencyMapper;
+import com.currencyconverter.mapper.ExchangeRateMapper;
 import com.currencyconverter.model.ExchangeRate;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
@@ -24,11 +26,17 @@ import java.util.*;
 @EnableScheduling
 public class ExchangeRateServiceImpl implements ExchangeRateService{
 
-    private CurrencyMapper mapper;
+    private CurrencyMapper currencyMapper;
+    private ExchangeRateMapper rateMapper;
 
     @Autowired
-    public void setMapper(CurrencyMapper mapper) {
-        this.mapper = mapper;
+    public void setCurrencyMapper(CurrencyMapper currencyMapper) {
+        this.currencyMapper = currencyMapper;
+    }
+
+    @Autowired
+    public void setRateMapper(ExchangeRateMapper rateMapper) {
+        this.rateMapper = rateMapper;
     }
 
     private ExchangeRateRepository exchangeRateRepository;
@@ -44,12 +52,12 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
     @Override
     public List<CurrencyDto> getAll() {
         LocalDate date =LocalDate.now();
-        return mapper.fromCurrencyList(exchangeRateRepository.findExchangeRateByDate(date).getCurrencies());
+        return currencyMapper.fromCurrencyList(exchangeRateRepository.findExchangeRateByDate(date).getCurrencies());
     }
 
     @Override
     public List<CurrencyDto> getAll(LocalDate date) {
-        List<CurrencyDto> lists = mapper.fromCurrencyList(findExchangeRateByDate(date).getCurrencies());
+        List<CurrencyDto> lists = currencyMapper.fromCurrencyList(findExchangeRateByDate(date).getCurrencies());
         lists.sort(Comparator.comparing(CurrencyDto::getName));
         return lists;
     }
@@ -81,8 +89,9 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private void saveToExchangeRate(URL url, LocalDate date) throws IOException {
         XmlMapper xmlMapper = new XmlMapper();
-        ExchangeRate rate = xmlMapper.readValue(url, ExchangeRate.class);
-        rate.setDate(date);
+        ExchangeRateDto rateDto = xmlMapper.readValue(url, ExchangeRateDto.class);
+        rateDto.setDate(date);
+        ExchangeRate rate = rateMapper.toExchangeRate(rateDto);
 
 //        ModelExchangeRate modelRate = xmlMapper.readValue(url, ExchangeRate.class);
 //        converter.convert(modelRate);

@@ -12,14 +12,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Entity
 @Table(schema = "jxmlparse_valcurs", name="currencies")
-//@JacksonXmlRootElement(localName = "Valute")
 public class Currency {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JacksonXmlProperty(namespace = "valute_pk")
-//    @JoinTable(name = "rate_valute_mapping",
-//    joinColumns = @JoinColumn(name = ""))
     private Long pk;
 
     @JacksonXmlProperty(localName = "ID", isAttribute = true)

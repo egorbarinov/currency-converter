@@ -46,12 +46,12 @@ public class ExchangeRateController {
     }
 
     @GetMapping({"/","/index"})
-    public String index(Model model, @RequestParam(required = false, name = "dateReq") String dateReq) {
+    public String index(Model model, @RequestParam(required = false, name = "date_req") String date_req) {
 
         model.addAttribute("standardDate", LocalDateTime.now());
-        if (dateReq == null) {
-            dateReq = LocalDate.now().toString();
-            model.addAttribute("requestDate", dateReq);
+        if (date_req == null) {
+            date_req = LocalDate.now().toString();
+            model.addAttribute("requestDate", date_req);
             model.addAttribute("date", date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
             try {
                 model.addAttribute("currencies", exchangeRateService.getAll(date));
@@ -60,9 +60,9 @@ public class ExchangeRateController {
             }
         }
         else {
-            LocalDate localDate = LocalDate.parse(dateReq);
+            LocalDate localDate = LocalDate.parse(date_req);
             model.addAttribute("date", localDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
-            model.addAttribute("requestDate", dateReq);
+            model.addAttribute("requestDate", date_req);
             try {
                 model.addAttribute("currencies", exchangeRateService.getAll(localDate));
             } catch (RuntimeException ex) {

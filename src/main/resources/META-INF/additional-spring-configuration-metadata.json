@@ -19,5 +19,10 @@
       "name": "mail.server.password",
       "type": "java.lang.String",
       "description": "Description for mail.server.password."
+    },
+    {
+      "name": "spring.properties.hibernate.format_sql",
+      "type": "java.lang.String",
+      "description": "Description for spring.properties.hibernate.format_sql."
     }
   ] }

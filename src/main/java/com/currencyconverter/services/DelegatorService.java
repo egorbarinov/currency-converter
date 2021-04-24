@@ -20,13 +20,13 @@ public class DelegatorService {
     }
 
     /**
-     * метод для выполнения конвертации данных, присваивающий dto значения конвертации и даты
+     * метод для выполнения конвертации данных
      */
     public void performCurrencyConversion(CurrencyDto currencyDto, LocalDate date) {
         List<BigDecimal> valuesToDecimal = new ArrayList<>();
 
-        addValuesToCurrency(date, valuesToDecimal, currencyDto.getCurrencyFrom());
-        addValuesToCurrency(date, valuesToDecimal, currencyDto.getCurrencyTo());
+        addCurrencyValue(date, valuesToDecimal, currencyDto.getCurrencyFrom());
+        addCurrencyValue(date, valuesToDecimal, currencyDto.getCurrencyTo());
 
         BigDecimal resultAmount = (valuesToDecimal.get(0))
                 .divide(valuesToDecimal.get(1), 10, RoundingMode.CEILING)
@@ -37,7 +37,7 @@ public class DelegatorService {
 
     }
 
-    private void addValuesToCurrency(LocalDate date, List<BigDecimal> valuesToDecimal, String currencyValue) {
+    private void addCurrencyValue(LocalDate date, List<BigDecimal> valuesToDecimal, String currencyValue) {
 
         if (currencyValue.equals("RUB")) {
             valuesToDecimal.add(BigDecimal.valueOf(1));

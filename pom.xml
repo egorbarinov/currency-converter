@@ -37,11 +37,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>jakarta.validation</groupId>-->
-<!--			<artifactId>jakarta.validation-api</artifactId>-->
-<!--			<version>2.0.2</version>-->
-<!--		</dependency>-->
 
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -71,6 +66,11 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>6.4.4</version>
 		</dependency>
 
 		<!--SECURITY-->
@@ -125,11 +125,6 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <!--		<dependency>-->
-<!--			<groupId>org.freemarker</groupId>-->
-<!--			<artifactId>freemarker</artifactId>-->
-<!--			<version>2.3.30</version>-->
-<!--		</dependency>-->
 
 	</dependencies>
 
@@ -157,14 +152,14 @@
 					</processTypes>
 				</configuration>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <source>11</source>-->
+<!--                    <target>11</target>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
         </plugins>
 	</build>

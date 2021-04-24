@@ -1,5 +1,6 @@
 package com.currencyconverter.dto;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,11 +17,17 @@ import java.util.Optional;
 public class CurrencyDto {
 
     private Long pk;
+    @JacksonXmlProperty(localName = "ID", isAttribute = true)
     private String id;
+    @JacksonXmlProperty(localName = "NumCode")
     private String numCode;
+    @JacksonXmlProperty(localName = "CharCode")
     private String charCode;
+    @JacksonXmlProperty(localName = "Nominal")
     private BigDecimal nominal;
+    @JacksonXmlProperty(localName = "Name")
     private String name;
+    @JacksonXmlProperty(localName = "Value")
     private BigDecimal value;
     private String currencyFrom;
     private String currencyTo;
