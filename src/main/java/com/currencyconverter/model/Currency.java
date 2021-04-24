@@ -17,23 +17,17 @@ public class Currency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pk;
-
-    @JacksonXmlProperty(localName = "ID", isAttribute = true)
+    @Column
     private String id;
-
-    @JacksonXmlProperty(localName = "NumCode")
+    @Column
     private String numCode;
-
-    @JacksonXmlProperty(localName = "CharCode")
+    @Column
     private String charCode;
-
-    @JacksonXmlProperty(localName = "Nominal")
+    @Column
     private BigDecimal nominal;
-
-    @JacksonXmlProperty(localName = "Name")
+    @Column
     private String name;
-
-    @JacksonXmlProperty(localName = "Value")
+    @Column
     private BigDecimal value;
 
     public void setValue(String value) {

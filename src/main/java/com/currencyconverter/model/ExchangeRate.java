@@ -21,24 +21,12 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(schema="jxmlparse_valcurs", name = "course")
-//@JacksonXmlRootElement(localName = "ValCurs")
-//@JsonIgnoreProperties(value = {"name"})
 @NamedQuery(name = "withValutes", query = "SELECT e FROM ExchangeRate e JOIN FETCH e.currencies WHERE e.date = :date") // for LAZY upload
 public class ExchangeRate {
 
     @Id
-//    @JacksonXmlProperty(localName = "Date")
-//    @JsonFormat(
-//            shape = JsonFormat.Shape.STRING,
-//////            pattern = "yyyy-MM-dd")
-//            pattern = "dd.MM.yyyy")
-//////            pattern = "yyyy-MM-dd'T'kk:mm:ssXXX")
-//    @JsonDeserialize(using = LocalDateDeserializer.class)
-//    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate date;
 
-//    @JacksonXmlElementWrapper(useWrapping = false)
-//    @JacksonXmlProperty(localName = "Valute")
     @OneToMany(targetEntity = Currency.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @CollectionTable(schema = "jxmlparse_valcurs",
             name = "rate_valute_mapping",

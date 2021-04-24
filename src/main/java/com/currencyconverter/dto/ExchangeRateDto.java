@@ -35,7 +35,7 @@ public class ExchangeRateDto {
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "Valute" )
-    private List<Currency> currencies;
+    private List<CurrencyDto> currencies;
 
     @Override
     public String toString() {

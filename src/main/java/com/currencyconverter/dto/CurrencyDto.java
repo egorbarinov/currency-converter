@@ -42,7 +42,7 @@ public class CurrencyDto {
     private Date conversionDate;
 
     public void setValue(String value) {
-        this.value = new BigDecimal(value.replace(",", "\\.")); // value.replaceAll
+        this.value = new BigDecimal(value.replace(",", ".")); // value.replaceAll
     }
 
     @Override
