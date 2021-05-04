@@ -38,13 +38,13 @@ spring:
     static-path-pattern: /statico/**
   jpa:
     hibernate:
+      show-sql: true
       ddl-auto: validate
       dialect: org.hibernate.dialect.PostgreSQL95Dialect
     show-sql: false
     properties:
       hibernate:
         format_sql: true
-
   datasource:
     driver-class-name: org.postgresql.Driver
     url: ${JDBC_DATABASE_URL:jdbc:postgresql://localhost:5432/postgres?currentSchema=jxmlparse_valcurs}

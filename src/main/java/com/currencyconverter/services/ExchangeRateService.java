@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ExchangeRateService {
 
-    void loadCbrfRates() throws IOException;
+    void loadCbrfRates(LocalDate date) throws IOException;
 
     void processingUploadData(LocalDate localDate) throws IOException;
     ExchangeRate findExchangeRateByDate(LocalDate date);

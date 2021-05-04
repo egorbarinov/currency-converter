@@ -16,6 +16,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 @Controller
@@ -30,8 +31,8 @@ public class ExchangeRateController {
         this.exchangeRateService = exchangeRateService;
         this.delegatorService = delegatorService;
         this.userService = userService;
-        exchangeRateService.processingUploadData(LocalDate.of(2021, 2, 1)); // LocalDate.of(1993, 1,6)
-        exchangeRateService.loadCbrfRates();
+        exchangeRateService.processingUploadData(LocalDate.of(2021, 4, 1)); // LocalDate.of(1993, 1,6)
+        exchangeRateService.loadCbrfRates(date);
     }
 
     @InitBinder   // для web обработки сообщений. WebDataBinder блокирует нулевые формы
@@ -46,7 +47,7 @@ public class ExchangeRateController {
     }
 
     @GetMapping({"/","/index"})
-    public String index(Model model, @RequestParam(required = false, name = "date_req") String date_req) {
+    public String index(Model model, @RequestParam(required = false, name = "date_req") String date_req) throws IOException {
 
         model.addAttribute("standardDate", LocalDateTime.now());
         if (date_req == null) {
@@ -61,6 +62,7 @@ public class ExchangeRateController {
         }
         else {
             LocalDate localDate = LocalDate.parse(date_req);
+            exchangeRateService.loadCbrfRates(localDate);
             model.addAttribute("date", localDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
             model.addAttribute("requestDate", date_req);
             try {

@@ -23,7 +23,6 @@ import java.util.*;
 
 
 @Service
-@EnableScheduling
 public class ExchangeRateServiceImpl implements ExchangeRateService{
 
     private CurrencyMapper currencyMapper;
@@ -67,22 +66,17 @@ public class ExchangeRateServiceImpl implements ExchangeRateService{
         return exchangeRateRepository.findExchangeRateByDate(date);
     }
 
-    /**
-     * метод парсит данные из http-запроса в DTO-object с помощью Jackson Xml Mapper. Вторым шагом метод создает Entity путем маппинга DTO-object , и  передает ее в базу данных
-     * посредством библиотеки Jackson
-     */
     @Override
-    @Scheduled(cron = "0 0/30 7-15 * * MON-FRI")
-    public void loadCbrfRates() throws IOException {
-        if (exchangeRateRepository.findExchangeRateByDate(LocalDate.now()) == null) {
+    public void loadCbrfRates(LocalDate date) throws IOException {
+        if (exchangeRateRepository.findExchangeRateByDate(date) == null && LocalDate.now().compareTo(date) >=0) {
             DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            URL url = new URL("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + LocalDate.now().format(formatters));
+            URL url = new URL("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + date.format(formatters));
 
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             int status = con.getResponseCode();
             if (status == HttpURLConnection.HTTP_OK) {
-                saveToExchangeRate(url, LocalDate.now());
+                saveToExchangeRate(url, date);
             }
         }
     }
