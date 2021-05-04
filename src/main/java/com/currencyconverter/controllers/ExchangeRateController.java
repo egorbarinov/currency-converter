@@ -25,7 +25,7 @@ public class ExchangeRateController {
     private final ExchangeRateService exchangeRateService;
     private final DelegatorService delegatorService;
     private final UserServiceImpl userService;
-    private final LocalDate date = LocalDate.now();
+    private LocalDate date = LocalDate.now();
 
     public ExchangeRateController(ExchangeRateService exchangeRateService, DelegatorService delegatorService, UserServiceImpl userService) throws IOException {
         this.exchangeRateService = exchangeRateService;
@@ -51,25 +51,18 @@ public class ExchangeRateController {
 
         model.addAttribute("standardDate", LocalDateTime.now());
         if (date_req == null) {
-            date_req = LocalDate.now().toString();
-            model.addAttribute("requestDate", date_req);
-            model.addAttribute("date", date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
-            try {
-                model.addAttribute("currencies", exchangeRateService.getAll(date));
-            } catch (RuntimeException ex) {
-                model.addAttribute("responseError", "Данные по курсам валют на запрашиваемую дату отсутствуют в базе данных.");
-            }
+            date_req = date.toString();
         }
         else {
-            LocalDate localDate = LocalDate.parse(date_req);
-            exchangeRateService.loadCbrfRates(localDate);
-            model.addAttribute("date", localDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
-            model.addAttribute("requestDate", date_req);
-            try {
-                model.addAttribute("currencies", exchangeRateService.getAll(localDate));
-            } catch (RuntimeException ex) {
-                model.addAttribute("responseError", "Данные по курсам валют на запрашиваемую дату отсутствуют в базе данных.");
-            }
+            date = LocalDate.parse(date_req);
+            exchangeRateService.loadCbrfRates(date);
+        }
+        model.addAttribute("date", date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy").withLocale(Locale.forLanguageTag("ru"))));
+        model.addAttribute("requestDate", date_req);
+        try {
+            model.addAttribute("currencies", exchangeRateService.getAll(date));
+        } catch (RuntimeException ex) {
+            model.addAttribute("responseError", "Данные по курсам валют на запрашиваемую дату отсутствуют в базе данных.");
         }
         return "index";
     }
