@@ -50,7 +50,7 @@ public class ExchangeRateController {
     public String index(Model model, @RequestParam(required = false, name = "date_req") String date_req) throws IOException {
 
         model.addAttribute("standardDate", LocalDateTime.now());
-        if (date_req != null) {
+        if (date_req == null) {
             date_req = date.toString();
         }
         else {
