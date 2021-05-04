@@ -51,6 +51,9 @@ public class ExchangeRateController {
 
         model.addAttribute("standardDate", LocalDateTime.now());
         if (date_req != null) {
+            date_req = date.toString();
+        }
+        else {
             date = LocalDate.parse(date_req);
             exchangeRateService.loadCbrfRates(date);
         }
